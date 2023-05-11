@@ -126,7 +126,7 @@
     display: none;
 }
 
-@media screen and (min-height: 110vw)
+@media screen and (min-height: 125vw)
 {
     .window.game #controls
     {
