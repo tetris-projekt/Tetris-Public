@@ -186,8 +186,8 @@ const data =
     {
         0:
         {
-            main: ".sus/main.ogg",
-            bass: ".sus/bass.ogg",
+            main: "classic/main.ogg",
+            bass: "classic/bass.ogg",
         },
         1:
         {
