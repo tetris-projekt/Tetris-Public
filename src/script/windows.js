@@ -94,8 +94,8 @@ const windows =
             <div id="controls">
                 <img src="${data.img_dir}controls/move_left.png" class="button control move-left" onpointerdown="try_to_move_left(); reset_move_left()"></img>
                 <img src="${data.img_dir}controls/rotate.png" class="button control rotate" onpointerdown="try_to_rotate(); reset_rotate()"></img>
-                <img src="${data.img_dir}controls/hard_drop.png" class="button control hard-drop" onpointerdown="try_to_hard_drop(); reset_hard_drop()"></img>
                 <img src="${data.img_dir}controls/move_right.png" class="button control move-right" onpointerdown="try_to_move_right(); reset_move_right()"></img>
+                <img src="${data.img_dir}controls/hard_drop.png" class="button control hard-drop" onpointerdown="try_to_hard_drop(); reset_hard_drop()"></img>
             </div>
         </div>
     `,
