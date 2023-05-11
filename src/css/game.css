@@ -139,6 +139,12 @@
     height: 17rem
 }
 
+.window.game .control.hard-drop
+{
+    display: block;
+    margin-inline: auto;
+}
+
 .window.game .control.reverse
 {
     transform: rotate(180deg);
