@@ -1,0 +1,376 @@
+:root
+{
+    --WINDOW_BG_COLOR: #161616;
+    font-size: 1vh;
+}
+
+@media screen and (min-height: 100vw)
+{
+    :root
+    {
+        font-size: 1vw;
+    }
+}
+
+/*------------------MAIN----------------*/
+
+body
+{
+    user-select: none;
+    margin: 0;
+    text-align: center;
+    background-color: #323232;
+    overflow: hidden;
+    cursor: url("../img/main/cursor.png") 15 15, auto;
+}
+
+#footer
+{
+    position: absolute;
+    z-index: 1;
+    height: 2rem;
+    bottom: 0;
+    right: calc(((100% - 100rem) / 2));
+}
+
+.display:is(.game, .windows)
+{
+    margin: 0 auto;
+    text-align: center;
+    background-color: var(--WINDOW_BG_COLOR);
+    height: calc(100vh - 16rem);
+}
+
+.display.game
+{
+    width: 100rem;
+}
+
+.display.windows
+{
+    position: fixed;
+    bottom: 0;
+    width: 100rem;
+    left: calc((100% - 100rem) / 2);
+    z-index: 1;
+}
+
+.display.transparent
+{
+    opacity: 90%;
+}
+
+.window
+{
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+.window.game
+{
+    width: 70%;
+}
+
+.disabled
+{
+    display: none;
+}
+
+#baner
+{
+    width: 100rem;
+    margin: 0 auto;
+    background-color: var(--WINDOW_BG_COLOR);
+}
+
+#baner-img
+{
+    height: 16rem;
+}
+
+.line.long
+{
+    display: block;
+    margin: 0.8rem auto;
+    height: 2rem;
+    width: 80%;
+}
+
+.line.short
+{
+    display: block;
+    margin: 1rem auto;
+    height: 1.6rem;
+    width: 60%;
+}
+
+/*------------------MAIN----------------*/
+
+
+
+/*-----------------HOVER----------------*/
+
+@media not all and (hover: none)
+{
+    .button:hover:not(:active)
+    {
+        transition: 0.06s;
+        transform: scale(1.05);
+        opacity: 70%;
+    }
+    .button:hover:active
+    {
+        transform: scale(0.95);
+        opacity: 50%;
+    }
+}
+
+/*-----------------HOVER----------------*/
+
+
+
+/*-----------------INFO-----------------*/
+
+.window.info #info
+{
+    height: 10rem;
+}
+
+.window.info #ok
+{
+    height: 6rem;
+}
+
+/*-----------------INFO-----------------*/
+
+
+
+/*-----------------MENU-----------------*/
+
+.window.menu #play
+{
+    height: 10rem;
+}
+
+.window.menu img:not(#play, .line, .line2)
+{
+    height: 5rem;
+}
+
+.window.menu .selector.game-mode
+{
+    aspect-ratio: 6.4 / 1;
+}
+
+.window.menu .selector.speed
+{
+    aspect-ratio: 5.1 / 1;
+}
+
+.selector
+{
+    height: 5rem;
+    margin: 0 auto;
+}
+
+.button.right
+{
+    float: right;
+}
+
+.button.left
+{
+    float: left;
+}
+
+/*-----------------MENU-----------------*/
+
+
+
+/*----------------PAUSE-----------------*/
+
+.window.pause img:not(#game-paused, .line, .line2)
+{
+    height: 6rem;
+}
+
+.window.pause #game-paused
+{
+    height: 8rem;
+}
+
+/*----------------PAUSE-----------------*/
+
+
+
+/*-------------HOW-TO-PLAY--------------*/
+
+.window.how-to-play #how-to-play
+{
+    height: 6rem;
+}
+
+.window.how-to-play .display.page
+{
+    height: 45rem;
+}
+
+.window.how-to-play .selector.page img
+{
+    height: 5rem;
+}
+
+.window.how-to-play .display.page-number
+{
+    display: inline-block;
+}
+
+.window.how-to-play .selector.page
+{
+    aspect-ratio: 3 / 1;
+}
+
+.window.how-to-play #back
+{
+    height: 6rem;
+}
+
+/*-------------HOW-TO-PLAY--------------*/
+
+
+
+/*---------------SETTINGS---------------*/
+
+.window.settings img:not(#settings, .line, .line2, .button)
+{
+    float: left;
+    height: 100%;
+}
+
+.window.settings .button:not(#save)
+{
+    float: right;
+    height: 100%;
+}
+
+.window.settings .property
+{
+    height: 6rem;
+    width: 50%;
+    clear: both;
+    margin: 0 auto;
+}
+
+.window.settings #settings, #save
+{
+    height: 8rem;
+}
+
+/*---------------SETTINGS---------------*/
+
+
+
+/*----------------REALLY----------------*/
+
+.window.really img:not(#really, .line, .line2)
+{
+    height: 6rem;
+}
+
+.window.really #ask
+{
+    height: 8rem;
+}
+
+.window.really #cancel
+{
+    float: left;
+}
+
+.window.really #yes
+{
+    float: right;
+}
+
+.window.really #buttons
+{
+    margin: 0 auto;
+    margin-top: 4rem;
+}
+
+.window.really-quit #buttons
+{
+    width: 40rem;
+}
+.window.really-restart #buttons
+{
+    width: 50rem;
+}
+/*----------------REALLY----------------*/
+
+
+
+/*--------------BEST-SCORES-------------*/
+
+.window.best-scores #best-scores
+{
+    height: 8rem;
+}
+
+.window.best-scores #back
+{
+    height: 6rem;
+}
+
+.window.best-scores .digit
+{
+    float: right;
+}
+
+.window.best-scores .char
+{
+    float: left;
+}
+
+.window.best-scores .column
+{
+    width: 20%;
+    float: left;
+}
+
+.window.best-scores .value
+{
+    clear: both;
+    margin: 0 auto;
+    width: fit-content;
+    height: 2rem;
+}
+
+.window.best-scores .empty
+{
+    height: 4rem;
+}
+
+.window.best-scores #score-board img:not(.empty)
+{
+    height: 100%;
+}
+
+.window.best-scores #score-board
+{
+    width: 80%;
+    margin: 2rem auto;
+    clear: both;
+}
+
+.window.best-scores .header
+{
+    height: 2.6rem;
+}
+
+.window.best-scores #clear
+{
+    height: 4rem;
+}
+
+/*--------------BEST-SCORES-------------*/

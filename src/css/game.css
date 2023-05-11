@@ -1,0 +1,234 @@
+/*-----------------GAME-----------------*/
+.window.game
+{
+    --BORDER: 0.6rem solid #222;
+    --TABLE_BG_COLOR: #050505;
+}
+
+.window.game #board
+{
+    border: var(--BORDER);
+    width: 50%;
+    aspect-ratio: 1 / 2;
+    float: left;
+    background-color: #222;
+}
+
+.window.game .line.short
+{
+    display: block;
+    height: 1.4rem;
+    margin: 1.6rem auto;
+    width: 100%;
+}
+
+.window.game #scoreboard
+{
+    float: right;
+    width: 43%;
+    box-sizing: border-box;
+}
+
+.window.game #preview
+{
+    float: right;
+    border: var(--BORDER);
+    width: 35%;
+    aspect-ratio: 7 / 5;
+    background-color: var(--TABLE_BG_COLOR);
+    margin-bottom: 5rem;
+}
+
+.window.game #next
+{
+    height: 20%;
+    width: 100%;
+}
+
+.window.game #next-img
+{
+    height: 100%;
+    float: left;
+}
+
+.window.game .img
+{
+    display: block;
+    float: left;
+    height: 100%;
+}
+
+.window.game .digit
+{
+    display: block;
+    float: right;
+    height: 100%;
+}
+
+.window.game .value
+{
+    height: 100%;
+}
+
+.window.game .value-display
+{
+    height: 3rem;
+    width: 95%;
+    clear: both;
+    margin: 0 auto;
+}
+
+.window.game :is(#speed-img, #game-mode-img)
+{
+    height: 3rem;
+}
+
+.window.game :is(#speed-img-value, #game-mode-img-value)
+{
+    height: 3rem;
+}
+
+.window.game #game-button
+{
+    display: block;
+    margin: 2rem auto;
+    height: 5.2rem;
+}
+
+.window.game .pixel
+{
+    font-family: monospace;
+    aspect-ratio: 1 / 1;
+    float: left;
+    border-radius: 10%;
+    box-sizing: border-box;
+    border-style: outset;
+    border-width: 0.7rem;
+    display: grid;
+    place-content: center;
+    font-size: 1.6rem;
+    font-weight: 700;
+    background-size: cover;
+}
+
+.window.game #board .pixel
+{
+    width: 10%;
+}
+
+.window.game #preview .pixel
+{
+    height: 20%;
+}
+
+.window.game #controls
+{
+    display: none;
+}
+
+@media screen and (min-height: 110vw)
+{
+    .window.game #controls
+    {
+        display: inline-block;
+    }    
+}
+
+.window.game .control
+{
+    height: 17rem
+}
+
+.window.game .control.reverse
+{
+    transform: rotate(180deg);
+}
+
+.window.game #board .pixel.empty
+{
+    background-color: var(--TABLE_BG_COLOR);
+    border: 0.2rem solid #222;
+}
+
+.window.game #preview .pixel.empty
+{
+    background-color: var(--TABLE_BG_COLOR);
+    border-width: 0;
+}
+
+.window.game .pixel.light-blue
+{
+    background-color: #00ffff;
+    border-color: #00e0e0;
+}
+
+.window.game .pixel.blue
+{
+    background-color: #4a4aff;
+    border-color: #4242e2;
+}
+
+.window.game .pixel.pink
+{
+    background-color: #ff00f0;
+    border-color: #e100d2;
+}
+
+.window.game .pixel.green
+{
+    background-color: #00ff59;
+    border-color: #00d249;
+}
+
+.window.game .pixel.yellow
+{
+    background-color: #f6ff50;
+    border-color: #d9e140;
+}
+
+.window.game .pixel.orange
+{
+    background-color: #ffb71d;
+    border-color: #efac1b;
+}
+
+.window.game .pixel.red
+{
+    background-color: #ff3737;
+    border-color: #e72c2c;
+}
+
+.window.game .pixel.ice
+{
+    background-image: url("../img/game/pixels/ice.png");
+    background-color: none;
+    border-color: #a2e3ff;
+}
+
+.window.game .pixel.fire
+{
+    background-image: url("../img/game/pixels/fire.png");
+    background-color: none;
+    border-color: #ff8800;
+}
+
+.window.game .pixel.steel
+{
+    background-image: url("../img/game/pixels/steel.png");
+    background-color: none;
+    border-color: #9c9c9c;
+}
+
+.window.game .pixel.glue
+{
+    background-image: url("../img/game/pixels/glue.png");
+    background-color: none;
+    border-color: #f88f34;
+}
+
+.window.game .pixel.transparent
+{
+    opacity: 20%;
+}
+
+/*----------------GAME------------------*/

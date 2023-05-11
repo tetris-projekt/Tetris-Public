@@ -1,0 +1,177 @@
+:root
+{
+    font-size: 1vh;
+    --BORDER: 0.6rem solid #222;
+}
+
+body
+{
+    margin: 0;
+    text-align: center;
+    background-color: #323232;
+    overflow: hidden;
+    cursor: url("img/cursor.png") 15 15, auto;
+    user-select: none;
+}
+
+.window.main
+{
+    width: 100rem;
+    height: 100vh;
+    background-color: #161616;
+    margin: 0 auto;
+}
+
+#footer
+{
+    position: absolute;
+    z-index: 1;
+    height: 2rem;
+    bottom: 0;
+    right: calc(((100% - 100rem) / 2));
+}
+
+#boards
+{
+    width: 70rem;
+    height: 32.6rem;
+    margin: 0 auto;
+}
+
+#baner
+{
+    margin: 1rem 0;
+    height: 10rem;
+}
+
+#edit-board
+{
+    position: relative;
+    width: 45%;
+    border: var(--BORDER);
+    aspect-ratio: 1 / 1;
+    float: left;
+    background-color: #222;
+}
+
+#edit-board .pixel
+{
+    width: calc(100% / 9);
+}
+
+#preview-board
+{
+    width: 35%;
+    float: right;
+    border: var(--BORDER);
+    aspect-ratio: 7 / 5;
+    background-color: #000;
+}
+
+#preview-board .pixel
+{
+    height: 20%;
+}
+
+#preview-board #next
+{
+    text-align: left;
+    width: 100%;
+    height: 20%;
+    background-color: #000;
+}
+
+#preview-board #next img
+{
+    height: 100%;
+}
+
+.pixel
+{
+    aspect-ratio: 1 / 1;
+    float: left;
+    border-radius: 10%;
+    box-sizing: border-box;
+    background-color: #000;
+}
+
+#edit-board .pixel:not(.on)
+{
+    border: 0.2rem solid #222;
+}
+
+.pixel.on
+{
+    border-style: outset;
+    border-width: 0.7rem;
+    background-color: #00ffff;
+    border-color: #00e0e0;
+}
+
+#display
+{
+    clear: both;
+    text-align: center;
+    width: 40rem;
+    padding: 2rem 0;
+    background-color: #000;
+    font-size: 2rem;
+    border: var(--BORDER);
+    display: block;
+    margin: 2rem auto;
+    color: #fff;
+}
+
+.line
+{
+    height: 2rem;
+    width: 50rem;
+    display: block;
+    margin: 0.2rem auto;
+}
+
+.button, .text
+{
+    height: 6rem;
+}
+
+.button:hover:not(:active)
+{
+    transition: 0.06s;
+    transform: scale(1.05);
+    opacity: 70%;
+}
+
+.button:hover:active
+{
+    transform: scale(0.95);
+    opacity: 50%;
+}
+
+#cross
+{
+    display: block;
+    position: absolute;
+    width: 2.5rem;
+    pointer-events: none;
+}
+
+#cross.center1
+{
+    left: calc((100% - 2.5rem) / 2);
+    top: calc((100% - 2.5rem) / 2);
+}
+
+#cross.center2
+{
+    left: calc((100% + 1rem) / 2);
+    top: calc((100% + 1rem) / 2);
+}
+
+@media screen and (min-height: 100vw)
+{
+    :root
+    {
+        font-size: 1vw;
+    }
+}
