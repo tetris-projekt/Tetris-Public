@@ -30,14 +30,14 @@ const config =
     "max_multiplier": 9,
 
     /* Chance to modify brick after spawn (0-1000) */
-    "modifier": 800,
+    "modifier": 200,
 
     /* Chance to use the specified modifier (0-1000) */
     "frozen": 1,
-    "burning": 500,
+    "burning": 1,
     "steel": 1,
     "glue": 1,
-    "oil": 500,
+    "oil": 1,
 
     /* Chance to spawn the specified brick (0-1000) */
     "bricks_1px": 1,
