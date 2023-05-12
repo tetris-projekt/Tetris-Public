@@ -161,14 +161,43 @@ class Board
                     continue
                 if(this.coords_exist(x, y))
                 {
-                    if(!this.get_pixel(x, y).is_empty())
+                    if(!this.get_pixel(x, y).is_empty()){
                         pixels.push(this.get_pixel(x, y))
+                        if(this.get_pixel(x, y).modifier == ModifierType.oil){
+                            let oilNeighbours = new Array
+                            oilNeighbours.push(this.get_pixel(x, y))
+                            pixels = pixels.concat(this.get_oil_neighbors(oilNeighbours))
+                        }
+                    } 
                 }
             }
         }
         return pixels
     }
-
+    get_oil_neighbors(oilNeighbours)
+    {
+        let pixel = oilNeighbours[oilNeighbours.length-1]
+        for(let y = pixel.y - 1; y <= pixel.y + 1; ++y)
+        {
+            for(let x = pixel.x - 1; x <= pixel.x + 1; ++x)
+            {
+                if(x == pixel.x && y == pixel.y)
+                    continue
+                if(this.coords_exist(x, y))
+                {
+                    if(!this.get_pixel(x, y).is_empty()){
+                        if(!oilNeighbours.includes(this.get_pixel(x, y))){
+                            oilNeighbours.push(this.get_pixel(x, y))
+                            if(this.get_pixel(x, y).modifier == ModifierType.oil){
+                                oilNeighbours = oilNeighbours.concat(this.get_oil_neighbors(oilNeighbours))
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return oilNeighbours
+    }
     get_pixel_neighbors_no_corners(pixel)
     {
         let vectors = [[0, -1], [0, 1], [-1, 0], [1, 0]]

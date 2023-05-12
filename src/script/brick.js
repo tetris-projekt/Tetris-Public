@@ -11,6 +11,7 @@ const ModifierType =
     fire: "fire",
     steel: "steel",
     glue: "glue",
+    oil: "oil",
 }
 
 class Brick

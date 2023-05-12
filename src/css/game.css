@@ -225,6 +225,13 @@
     border-color: #9c9c9c;
 }
 
+.window.game .pixel.oil
+{
+    background-image: url("../img/game/pixels/oil.png");
+    background-color: none;
+    border-color: #9c9c9c;
+}
+
 .window.game .pixel.glue
 {
     background-image: url("../img/game/pixels/glue.png");

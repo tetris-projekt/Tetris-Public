@@ -219,6 +219,9 @@ class Game
             case "glue":
                 brick.set_modifier(ModifierType.glue)
             break
+            case "oil":
+                brick.set_modifier(ModifierType.oil)
+            break
         }   
     }
 

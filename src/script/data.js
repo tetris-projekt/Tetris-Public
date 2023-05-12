@@ -243,6 +243,10 @@ const data =
         {
             chance: get_config_number("glue", 0, 1000, 0)
         },
+        "oil":
+        {
+            chance: get_config_number("oil", 0, 1000, 0)
+        },
     },
 
     colors:
