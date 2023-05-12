@@ -174,6 +174,7 @@ class Board
         }
         return pixels
     }
+
     get_oil_neighbors(oilNeighbours)
     {
         let pixel = oilNeighbours[oilNeighbours.length-1]
@@ -198,6 +199,7 @@ class Board
         }
         return oilNeighbours
     }
+    
     get_pixel_neighbors_no_corners(pixel)
     {
         let vectors = [[0, -1], [0, 1], [-1, 0], [1, 0]]
