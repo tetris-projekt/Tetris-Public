@@ -9,18 +9,18 @@ class ScoreBoardUI
     make_header()
     {
         let cols = new Array()
-        cols.push(main_ui.img_to_div_tag(`${data.img_dir}game/score.png`, "header") + "<br>\n")
-        cols.push(main_ui.img_to_div_tag(`${data.img_dir}game/lines.png`, "header") + "<br>\n")
-        cols.push(main_ui.img_to_div_tag(`${data.img_dir}game_mode/game_mode.png`, "header") + "<br>\n")
-        cols.push(main_ui.img_to_div_tag(`${data.img_dir}speed/speed.png`, "header") + "<br>\n")
-        cols.push(main_ui.img_to_div_tag(`${data.img_dir}best_scores/date.png`, "header") + "<br>\n")
+        cols.push(main_ui.img_to_div_tag(get_src("game", "score"), "header") + "<br>\n")
+        cols.push(main_ui.img_to_div_tag(get_src("game", "lines"), "header") + "<br>\n")
+        cols.push(main_ui.img_to_div_tag(get_src("game_mode", "game_mode"), "header") + "<br>\n")
+        cols.push(main_ui.img_to_div_tag(get_src("speed", "speed"), "header") + "<br>\n")
+        cols.push(main_ui.img_to_div_tag(get_src("best_scores", "date"), "header") + "<br>\n")
         return cols
     }
 
     create_clear_button()
     {
         const display = main_ui.get_id("clear-box")
-        display.innerHTML = `<img src="${data.img_dir}best_scores/clear_best_scores.png" id="clear"
+        display.innerHTML = `<img src="${get_src("best_scores", "clear_best_scores")}" id="clear"
         class="button" onclick="score_board.clear()"></img>` + line("short")
         main_ui.turn_off_dragging_imgs(display)
     }
@@ -43,9 +43,9 @@ class ScoreBoardUI
             let date = cur_score.date
             cols[0] += main_ui.number_to_div_tag(score) + "<br>\n"
             cols[1] += main_ui.number_to_div_tag(lines) + "<br>\n"
-            cols[2] += main_ui.img_to_div_tag(`${data.img_dir}game_mode/${game_mode}`, "value") + "<br>\n"
-            cols[3] += main_ui.img_to_div_tag(`${data.img_dir}speed/${speed}`, "value") + "<br>\n"
-            cols[4] += main_ui.date_to_div_tag(date) + "<br>\n"
+            cols[2] += main_ui.img_to_div_tag(game_mode, "value") + "<br>\n"
+            cols[3] += main_ui.img_to_div_tag(speed, "value") + "<br>\n"
+            cols[4] += main_ui.str_number_to_div_tag(date) + "<br>\n"
         }
         const display = main_ui.get_id("score-board")
         for(let i = 0 ; i < cols.length; ++i)
@@ -59,7 +59,7 @@ class ScoreBoardUI
     show_empty()
     {
         const display = main_ui.get_id("score-board")
-        display.innerHTML = main_ui.to_img_tag(`${data.img_dir}best_scores/empty.png`, "empty")
+        display.innerHTML = main_ui.to_img_tag(get_src("best_scores", "empty"), "empty")
         main_ui.turn_off_dragging_imgs(display)
         this.remove_clear_button()
     }
