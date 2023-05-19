@@ -81,8 +81,8 @@ function get_config_vectors_lists(property)
 
 const data = 
 {
-    img_dir: "src/img/",
     date_separator: "-",
+    page_number_separator: "/",
     value_chars: "0123456789-",
     digits_in_values: 10,
     max_score_board_length: 10,
@@ -138,16 +138,16 @@ const data =
     
     SettingsNamesToImgs:
     {
-        "sounds": "sounds.png",
-        "music": "music.png",
-        "ghost": "ghost.png",
+        "sounds": get_src("settings", "sounds"),
+        "music": get_src("settings", "music"),
+        "ghost": get_src("settings", "ghost"),
     },
     
     GameSpeedToImgs: 
     {
-        0: "slow.png",
-        1: "normal.png",
-        2: "fast.png",
+        0: get_src("speed", "slow"),
+        1: get_src("speed", "normal"),
+        2: get_src("speed", "fast"),
     },
 
     GameSpeedToDelays: 
@@ -166,11 +166,11 @@ const data =
 
     GameModeToImgs:
     {
-        0: "classic.png",
-        1: "modified.png",
-        2: "extended.png",
-        3: "extreme.png",
-        4: ".sus/secret.png"
+        0: get_src("game_mode", "classic"),
+        1: get_src("game_mode", "modified"),
+        2: get_src("game_mode", "extended"),
+        3: get_src("game_mode", "extreme"),
+        4: get_src("game_mode", "secret"),
     },
 
     GameModeToNames:
@@ -227,11 +227,11 @@ const data =
     
     modifiers: 
     {
-        "froze": 
+        "ice": 
         {
             chance: get_config_number("frozen", 0, 1000, 0),
         },
-        "burn":
+        "fire":
         {
             chance: get_config_number("burning", 0, 1000, 0),
         },
@@ -242,10 +242,6 @@ const data =
         "glue":
         {
             chance: get_config_number("glue", 0, 1000, 0)
-        },
-        "oil":
-        {
-            chance: get_config_number("oil", 0, 1000, 0)
         },
     },
 
@@ -334,6 +330,7 @@ const data =
     },
     score_for_first_line: get_config_number("score_for_first_line", 0, 1000, 250),
     line_combo_multiplier: get_config_number("line_combo_multiplier", 2, 10, 2),
+    recursive_gravity_multiplier: get_config_number("recursive_gravity_multiplier", 2, 10, 2),
     score_for_soft_drop: get_config_number("score_for_soft_drop", 0, 1000, 1),
     score_for_hard_drop: get_config_number("score_for_hard_drop", 0, 1000, 2),
     score_for_compressing: get_config_number("score_for_compressing", 0, 1000, 50),
