@@ -32,8 +32,8 @@ const GameMode =
 
 const GameButtons =
 {
-    pause: "game/pause.png",
-    menu: "menu/menu.png",
+    pause: get_src("game", "pause"),
+    menu: get_src("game", "menu"),
 }
 
 const GameModeList = [GameMode.classic, GameMode.modified, GameMode.extended, GameMode.extreme, GameMode.normal]
@@ -42,6 +42,10 @@ class Game
 {
     constructor(properties, ui)
     {
+        this.next_brick = null
+        this.cur_brick = null
+        this.ghost = null
+        this.burn_preview = null
         this.score_counter = new ScoreCounter()
         this.properties = properties
         this.ui = ui
@@ -102,10 +106,9 @@ class Game
 
     random_number(range)
     {
-        if(range > 0)
-            return Math.round(Math.random() * (range - 1))
-        else
-            return 0
+        let number = Math.random() * range
+        number -= number % 1
+        return number
     }
 
     random_element(array)
@@ -144,6 +147,7 @@ class Game
         let brick_type = data.default_brick_type
         if(this.properties.extended == true)
             brick_type = this.get_random_from_chances_table(this.properties.brick_type_chances)
+        
         let vectors_list = this.random_element(data.bricks[brick_type].vectors_list)
         if(!vectors_list)
             vectors_list = this.random_element(data.bricks[data.default_brick_type].vectors_list)
@@ -179,7 +183,10 @@ class Game
     {
         this.try_to_generate_multiplier(brick)
         if(this.random_number(data.random_range) < data.chance_to_modify)
-            this.modify_brick(brick)
+        {
+            let modifier = this.get_random_from_chances_table(this.properties.modifier_type_chances)
+            brick.set_modifier(modifier)  
+        }
     }
 
     spawn_next_brick()
@@ -200,29 +207,6 @@ class Game
         }
         this.commit_move()
         this.generate_next_brick()
-    }
-
-    modify_brick(brick)
-    {
-        let modifier = this.get_random_from_chances_table(this.properties.modifier_type_chances)
-        switch(modifier)
-        {
-            case "froze":
-                brick.set_modifier(ModifierType.ice)
-            break
-            case "burn":
-                brick.set_modifier(ModifierType.fire)
-            break
-            case "steel":
-                brick.set_modifier(ModifierType.steel)
-            break
-            case "glue":
-                brick.set_modifier(ModifierType.glue)
-            break
-            case "oil":
-                brick.set_modifier(ModifierType.oil)
-            break
-        }   
     }
 
     substract_bricks(brick1, brick2)
@@ -255,23 +239,31 @@ class Game
         this.ghost.ghostify()
         this.board.hard_drop(this.ghost)
         if(this.ghost.modifier == ModifierType.fire)
-            this.board.show_burn_preview(this.ghost)
+        {
+            this.burn_preview = this.board.find_pixels_to_burn(this.ghost)
+            this.board.show_burn_preview(this.burn_preview)
+        }
+        else
+        {
+            this.burn_preview = null
+        }
         this.substract_bricks(this.ghost, this.cur_brick)
         this.board.add_brick(this.ghost)
     }
     
     refresh_ghost()
     {
+        if(this.burn_preview != null)
+            this.board.hide_burn_preview(this.burn_preview)
         if(this.ghost != null)
-        {
             this.board.remove_brick(this.ghost)
-            if(this.cur_brick.modifier == ModifierType.fire)
-                this.board.hide_burn_preview()
-        }
         if(this.properties.settings["ghost"] == true)
             this.generate_ghost()
         else
+        {
             this.ghost = null
+            this.burn_preview = null
+        }
     }
     
     refresh_settings(settings)
@@ -342,36 +334,22 @@ class Game
         this.cur_brick.modifier = modifier
     }
 
-    apply_gravity()
+    try_to_enable_gravity(brick)
     {
-        this.read_selected_brick()
-        if(this.cur_brick.pixels.length == 0 || this.board.check_stick(this.cur_brick) == true)
+        if(brick.pixels.length == 0 || this.board.check_stick(brick) == true)
+            return false
+        this.board.remove_brick(brick)
+        if(brick.modifier == ModifierType.steel)
         {
-            this.spawn_next_brick()
-            return
-        }
-        this.board.remove_brick(this.cur_brick)
-        if(this.cur_brick.modifier == ModifierType.steel)
-        {
-            let compressed = this.board.compress(this.cur_brick)
+            let compressed = this.board.compress(brick)
             this.commit_move()
-            if(!compressed)
-                this.spawn_next_brick()
-            return
+            return compressed
         }
-        ++this.cur_brick.y
-        let can_move = this.board.is_space_for_brick(this.cur_brick)
-        --this.cur_brick.y
+        ++brick.y
+        let can_move = this.board.is_space_for_brick(brick)
+        --brick.y
         this.commit_move()
-        if(!can_move)
-            this.spawn_next_brick()
-    }
-
-    try_to_apply_gravity()
-    {
-        this.board.select_brick(this.cur_brick)
-        this.remove_lines()
-        this.apply_gravity()
+        return can_move
     }
 
     add_score(score)
@@ -380,9 +358,8 @@ class Game
         this.ui.refresh_score(this.score)
     }
 
-    remove_lines()
+    remove_lines(lines)
     {
-        let lines = this.try_to_create_lines()
         if(lines.length > 0)
         {
             this.board.remove_lines(lines)
@@ -394,48 +371,51 @@ class Game
 
     try_to_compress()
     {
-        if(this.cur_brick.modifier == ModifierType.steel)
+        this.cur_brick.rotate = false
+        this.cur_brick.move = false
+        this.board.remove_brick(this.cur_brick)
+        let compressed = this.board.compress(this.cur_brick)
+        this.commit_move()
+        if(compressed)
         {
-            this.cur_brick.rotate = false
-            this.cur_brick.move = false
-            this.board.remove_brick(this.cur_brick)
-            let compressed = this.board.compress(this.cur_brick)
-            this.commit_move()
-            if(compressed)
-            {
-                this.add_score(this.score_counter.count_score_for_compress())
-                return true
-            }
-        }
-        return false
-    }
-
-    try_to_burn()
-    {
-        if(this.cur_brick.modifier == ModifierType.fire)
-        {
-            this.board.hide_burn_preview()
-            this.board.remove_brick(this.cur_brick)
-            let stats = this.board.burn_around(this.cur_brick)
-            this.add_score(this.score_counter.count_score_for_burning(stats.burned))
-            this.add_score(this.score_counter.count_score_for_melting(stats.melted))
-            this.spawn_next_brick()
+            this.add_score(this.score_counter.count_score_for_compress())
             return true
         }
         return false
     }
 
+    burn_brick(brick)
+    {
+        let stats = this.board.burn_brick(brick)
+        this.add_score(this.score_counter.count_score_for_burning(stats.burned))
+        this.add_score(this.score_counter.count_score_for_melting(stats.melted))
+        this.spawn_next_brick()
+        return true
+    }
+
     place()
     {
         this.commit_move()
-        if(this.try_to_burn() == true)
-            return
-        if(this.try_to_compress() == true)
-            return
-        this.try_to_apply_gravity()
+        switch(this.cur_brick.modifier)
+        {
+            case ModifierType.fire:
+                this.burn_brick(this.cur_brick)
+            break
+            case ModifierType.steel:
+                if(this.try_to_compress() == true)
+                    break
+            default:
+                this.board.select_brick(this.cur_brick)
+                this.remove_lines(this.find_lines())
+                this.read_selected_brick()
+                if(this.try_to_enable_gravity(this.cur_brick) == true)
+                    this.score_counter.recursive_gravity_multiplier = true
+                else
+                    this.spawn_next_brick()
+        }
     }
 
-    try_to_create_lines()
+    find_lines()
     {
         let lines = new Array()
         for(let y = 0; y < this.board.height; ++y)
@@ -463,14 +443,6 @@ class Game
         let distance = this.board.hard_drop(this.cur_brick)
         this.add_score(this.score_counter.count_score_for_hard_drop(distance))
         this.place()
-    }
-
-    try_to_stick()
-    {
-        if(this.board.check_stick(this.cur_brick) == true)
-            this.place()
-        else
-            this.commit_move()
     }
 
     try_to_rotate()
