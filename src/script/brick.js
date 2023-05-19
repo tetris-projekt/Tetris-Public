@@ -11,8 +11,21 @@ const ModifierType =
     fire: "fire",
     steel: "steel",
     glue: "glue",
-    oil: "oil",
 }
+
+const BurnableModifiers = 
+[
+    ModifierType.none,
+    ModifierType.glue,
+    ModifierType.ice,
+    ModifierType.fire,
+]
+
+const StickableModifiers = 
+[
+    ModifierType.glue,
+    ModifierType.none,
+]
 
 class Brick
 {
@@ -43,8 +56,7 @@ class Brick
     static copy(brick)
     {
         let copy = new Brick()
-        for(let i = 0; i < brick.pixels.length; ++i)
-            copy.pixels[i] = Pixel.copy(brick.pixels[i])
+        Brick.copy_vectors_list(copy.pixels, brick.pixels)
         copy.x = brick.x
         copy.y = brick.y
         copy.rotate = brick.rotate
@@ -52,6 +64,12 @@ class Brick
         copy.modifier = brick.modifier
         copy.special_rotate = brick.special_rotate
         return copy
+    }
+
+    static copy_vectors_list(target, vectors_list)
+    {
+        for(let i = 0; i < vectors_list.length; ++i)
+            target[i] = Pixel.copy(vectors_list[i])
     }
 
     rotate_right()
@@ -94,6 +112,18 @@ class Brick
     get_pixel_y(index)
     {
         return this.y + this.pixels[index].y
+    }
+
+    get_board_pixels()
+    {
+        let pixel_list = new Array()
+        Brick.copy_vectors_list(pixel_list, this.pixels)
+        for(let i = 0; i < this.pixels.length; ++i)
+        {
+            pixel_list[i].x = this.get_pixel_x(i)
+            pixel_list[i].y = this.get_pixel_y(i)
+        }
+        return pixel_list
     }
 
     set_modifier(modifier)
