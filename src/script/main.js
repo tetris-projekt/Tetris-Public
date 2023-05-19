@@ -29,13 +29,14 @@ function isIn(value, arr)
 function setw(number, length)
 {
     string = number.toString()
-    for(; string.length < length;)
+    while(string.length < length)
         string = "0" + string
     return string
 }
 
 function setup()
 {
+    preload_imgs()
     main_ui = new MainUI()
     main_ui.setup()
     if(localStorage.length == 0)
@@ -45,12 +46,28 @@ function setup()
     set_listeners()
 }
 
+function preload_imgs()
+{
+    for(let dir in img_dirs)
+    {
+        for(let img in img_dirs[dir])
+        {
+            let preloader = new Image()
+            preloader.src = get_src(dir, img)
+        }
+    }
+}
+
 function set_listeners()
 {
     document.onblur = () =>
     {
         if(game != null && game.state == GameState.active)
             pause()
+    }
+    main_ui.get_id("baner-img").onclick = () =>
+    {
+        location.reload(true)
     }
 }
 
@@ -69,10 +86,11 @@ function show_menu()
 {
     game = null
     main_ui.hide_display("game")
-    main_ui.display_remove_opacity("windows")
     open_window("windows", "menu")
     main_ui.refresh_menu_game_mode(GameModeList[game_mode_index])
     main_ui.refresh_menu_speed(GameSpeedList[speed_index])
+    main_ui.refresh_arrows("game-mode", game_mode_index == 0, game_mode_index == Object.keys(GameMode).length - 1)
+    main_ui.refresh_arrows("speed", speed_index == 0, speed_index == Object.keys(GameSpeed).length - 1)
 }
 
 function change_speed(by)
@@ -82,6 +100,7 @@ function change_speed(by)
     {
         speed_index = new_index
         main_ui.refresh_menu_speed(GameSpeedList[speed_index])
+        main_ui.refresh_arrows("speed", speed_index == 0, speed_index == Object.keys(GameSpeed).length - 1)
     }
 }
 
@@ -103,6 +122,7 @@ function change_game_mode(by)
         }
     }
     main_ui.refresh_menu_game_mode(GameModeList[game_mode_index])
+    main_ui.refresh_arrows("game-mode", game_mode_index == 0, game_mode_index == Object.keys(GameMode).length - 1)
 }
 
 function switch_page(by)
@@ -112,7 +132,9 @@ function switch_page(by)
     {
         cur_page = new_page
         main_ui.refresh_page(cur_page)
+        main_ui.refresh_arrows("page", cur_page == 1, cur_page == data.number_of_tutorial_pages)
     }
+
 }
 
 function create_new_game()
@@ -129,7 +151,6 @@ function play_game()
 {
     open_window("game", "game")
     main_ui.hide_display("windows")
-    main_ui.display_add_opacity("windows")
     game = create_new_game()
     game.start()
     tick_delay = data.GameSpeedToDelays[game.properties.speed]
@@ -174,7 +195,9 @@ function show_how_to_play()
 {
     open_window("windows", "how-to-play")
     cur_page = 1
+    main_ui.create_page_number(data.number_of_tutorial_pages)
     main_ui.refresh_page(cur_page)
+    main_ui.refresh_arrows("page", cur_page == 1, cur_page == data.number_of_tutorial_pages)
 }
 
 function go_back()
