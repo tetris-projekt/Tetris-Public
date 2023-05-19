@@ -9,11 +9,13 @@ class ScoreCounter
     constructor()
     {
         this.prev_lines = 0
+        this.recursive_gravity_multiplier = false
     }
 
     reset()
     {
         this.prev_lines = 0
+        this.recursive_gravity_multiplier = false
     }
 
     count_score_for_making_lines(lines)
@@ -58,6 +60,8 @@ class ScoreCounter
         if(lines.length > 0)
         {
             score = this.count_score_for_making_lines(lines.length + this.prev_lines)
+            if(this.recursive_gravity_multiplier == true)
+                score *= data.recursive_gravity_multiplier
             score -= this.count_score_for_making_lines(this.prev_lines)
             score += this.count_score_for_multipliers(lines)
             this.prev_lines = lines.length
