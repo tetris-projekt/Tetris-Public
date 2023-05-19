@@ -39,17 +39,17 @@ class GameUI
     refresh_controls(reverse)
     {
         if(reverse == true)
-            main_ui.get_first_from_class("control hard-drop").classList.add("reverse")
+            main_ui.get_id("controls").classList.add("reverse")
     }
 
     refresh_speed(speed)
     {
-        main_ui.get_id("speed-img-value").src = data.img_dir + "speed/" + data.GameSpeedToImgs[speed]
+        main_ui.get_id("speed-img-value").src = data.GameSpeedToImgs[speed]
     }
 
     refresh_game_mode(game_mode)
     {
-        main_ui.get_id("game-mode-img-value").src = data.img_dir + "game_mode/" + data.GameModeToImgs[game_mode]
+        main_ui.get_id("game-mode-img-value").src = data.GameModeToImgs[game_mode]
     }  
 
     refresh_board(board)
@@ -107,7 +107,7 @@ class GameUI
         else
         {
             for(let i = 0; i < number_of_digits; ++i)
-                main_ui.get_id(id_prefix + i).src = data.img_dir + "digits/" + digits[i] + ".png"
+                main_ui.get_id(id_prefix + i).src = get_src("digits", digits[i])
         }
     }
 
@@ -123,6 +123,6 @@ class GameUI
 
     refresh_button(button)
     {
-        main_ui.get_id("game-button").src = data.img_dir + button
+        main_ui.get_id("game-button").src = button
     }
 }
