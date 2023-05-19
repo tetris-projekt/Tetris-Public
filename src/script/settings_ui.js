@@ -16,7 +16,7 @@ class SettingsUI
             `
                 <br>
                 <div class="property">
-                    <img src="${data.img_dir}settings/${data.SettingsNamesToImgs[property_name]}"></img>
+                    <img src="${data.SettingsNamesToImgs[property_name]}"></img>
                     <img id="${property_name}" class="button" onclick="settings.toggle(this.id)"></img>
                 </div>\n
             ` 
@@ -31,8 +31,8 @@ class SettingsUI
     refresh_checkbox(property_name, property)
     {
         if(property == true)
-            main_ui.get_id(property_name).src = data.img_dir + "settings/checkbox_on.png"
+            main_ui.get_id(property_name).src = get_src("settings", "checkbox_on")
         else
-            main_ui.get_id(property_name).src = data.img_dir + "settings/checkbox_off.png"
+            main_ui.get_id(property_name).src = get_src("settings", "checkbox_off")
     }
 }
