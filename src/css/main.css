@@ -112,17 +112,22 @@ body
 
 @media not all and (hover: none)
 {
-    .button:hover:not(:active)
+    .button:not(.disabled-animation):hover:not(:active)
     {
         transition: 0.06s;
         transform: scale(1.05);
         opacity: 70%;
     }
-    .button:hover:active
+    .button:not(.disabled-animation):hover:active
     {
         transform: scale(0.95);
         opacity: 50%;
     }
+}
+
+.button.disabled-animation
+{
+    opacity: 65%;
 }
 
 /*-----------------HOVER----------------*/
@@ -227,7 +232,12 @@ body
 
 .window.how-to-play .selector.page
 {
-    aspect-ratio: 3 / 1;
+    aspect-ratio: 4 / 1;
+}
+
+.window.how-to-play .selector.page .value
+{
+    float: left;
 }
 
 .window.how-to-play #back
