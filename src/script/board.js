@@ -150,7 +150,7 @@ class Board
         return true
     }
 
-    get_pixel_neighbors(pixel)
+    get_pixel_neighbours(pixel)
     {
         let pixels = new Array()
         for(let y = pixel.y - 1; y <= pixel.y + 1; ++y)
@@ -161,46 +161,15 @@ class Board
                     continue
                 if(this.coords_exist(x, y))
                 {
-                    if(!this.get_pixel(x, y).is_empty()){
+                    if(!this.get_pixel(x, y).is_empty())
                         pixels.push(this.get_pixel(x, y))
-                        if(this.get_pixel(x, y).modifier == ModifierType.oil){
-                            let oilNeighbours = new Array
-                            oilNeighbours.push(this.get_pixel(x, y))
-                            pixels = pixels.concat(this.get_oil_neighbors(oilNeighbours))
-                        }
-                    } 
                 }
             }
         }
         return pixels
     }
 
-    get_oil_neighbors(oilNeighbours)
-    {
-        let pixel = oilNeighbours[oilNeighbours.length-1]
-        for(let y = pixel.y - 1; y <= pixel.y + 1; ++y)
-        {
-            for(let x = pixel.x - 1; x <= pixel.x + 1; ++x)
-            {
-                if(x == pixel.x && y == pixel.y)
-                    continue
-                if(this.coords_exist(x, y))
-                {
-                    if(!this.get_pixel(x, y).is_empty()){
-                        if(!oilNeighbours.includes(this.get_pixel(x, y))){
-                            oilNeighbours.push(this.get_pixel(x, y))
-                            if(this.get_pixel(x, y).modifier == ModifierType.oil){
-                                oilNeighbours = oilNeighbours.concat(this.get_oil_neighbors(oilNeighbours))
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return oilNeighbours
-    }
-    
-    get_pixel_neighbors_no_corners(pixel)
+    get_pixel_neighbours_no_corners(pixel)
     {
         let vectors = [[0, -1], [0, 1], [-1, 0], [1, 0]]
         let pixels = new Array()
@@ -217,44 +186,46 @@ class Board
         return pixels
     }
 
-    get_brick_neighbors(brick)
+    get_brick_neighbours(brick)
     {
-        let neighbors_list = new Array()
+        let neighbours_list = new Array()
+        let brick_pixels = brick.get_board_pixels()
         for(let i = 0; i < brick.pixels.length; ++i)
         {
             if(this.coords_exist(brick.get_pixel_x(i), brick.get_pixel_y(i)))
             {
                 let pixel = this.get_pixel(brick.get_pixel_x(i), brick.get_pixel_y(i))
-                let neighbors = this.get_pixel_neighbors(pixel)
-                for(let i = 0; i < neighbors.length; ++i)
+                let neighbours = this.get_pixel_neighbours(pixel)
+                for(let i = 0; i < neighbours.length; ++i)
                 {
-                    let pixel = neighbors[i]
-                    if(!this.is_in_pixel_list(pixel, neighbors_list))
-                        neighbors_list.push(pixel)
+                    let pixel = neighbours[i]
+                    if(!this.is_in_pixel_list(pixel, neighbours_list) && !this.is_in_pixel_list(pixel, brick_pixels))
+                        neighbours_list.push(pixel)
                 }
             }
         }
-        return neighbors_list
+        return neighbours_list
     }
 
-    get_brick_neighbors_no_corners(brick)
+    get_brick_neighbours_no_corners(brick)
     {
-        let neighbors_list = new Array()
+        let brick_pixels = brick.get_board_pixels()
+        let neighbours_list = new Array()
         for(let i = 0; i < brick.pixels.length; ++i)
         {
             if(this.coords_exist(brick.get_pixel_x(i), brick.get_pixel_y(i)))
             {
                 let pixel = this.get_pixel(brick.get_pixel_x(i), brick.get_pixel_y(i))
-                let neighbors = this.get_pixel_neighbors_no_corners(pixel)
-                for(let i = 0; i < neighbors.length; ++i)
+                let neighbours = this.get_pixel_neighbours_no_corners(pixel)
+                for(let i = 0; i < neighbours.length; ++i)
                 {
-                    let pixel = neighbors[i]
-                    if(!this.is_in_pixel_list(pixel, neighbors_list))
-                        neighbors_list.push(pixel)
+                    let pixel = neighbours[i]
+                    if(!this.is_in_pixel_list(pixel, neighbours_list) && !this.is_in_pixel_list(pixel, brick_pixels))
+                        neighbours_list.push(pixel)
                 }
             }
         }
-        return neighbors_list
+        return neighbours_list
     }
 
     is_in_pixel_list(pixel, pixel_list)
@@ -267,16 +238,10 @@ class Board
         return false
     }
 
-    burn_around(brick)
+    burn_brick(brick)
     {
-        let neighbors = this.get_brick_neighbors(brick)
-        let pixels_to_burn = new Array()
-        for(let i = 0; i < neighbors.length; ++i)
-        {
-            let pixel = neighbors[i]
-            if(pixel.modifier != ModifierType.steel)
-                pixels_to_burn.push(pixel)
-        }
+        let pixels_to_burn = this.find_pixels_to_burn(brick)
+        this.remove_brick(brick)
         let burned_pixels_stats = 
         {
             burned: brick.pixels.length,
@@ -359,46 +324,45 @@ class Board
         return true
     }
 
-    show_burn_preview(brick)
+    find_pixels_to_burn(brick)
     {
-        let neighbors = this.get_brick_neighbors(brick)
-        for(let i = 0; i < neighbors.length; ++i)
+        let brick_neighbours = this.get_brick_neighbours(brick)
+        let pixels_to_burn = new Array()
+        for(let i = 0; i < brick_neighbours.length; ++i)
         {
-            let pixel = neighbors[i]
-            if(isIn(pixel.modifier, [ModifierType.none, ModifierType.ice, ModifierType.glue]))
-                pixel.transparent = true
+            let neighbour = brick_neighbours[i]
+            if(isIn(neighbour.modifier, BurnableModifiers))
+                pixels_to_burn.push(neighbour)
         }
+        return pixels_to_burn
     }
 
-    hide_burn_preview()
+    show_burn_preview(burn_preview)
     {
-        for(let y = 0; y < this.height; ++y)
-        {
-            for(let x = 0; x < this.width; ++x)
-            {
-                let pixel = this.get_pixel(x, y)
-                if(pixel.transparent == true)
-                    pixel.transparent = false
-            }
-        }
+        for(let i = 0; i < burn_preview.length; ++i)
+            burn_preview[i].transparent = true
+    }
+
+    hide_burn_preview(burn_preview)
+    {
+        for(let i = 0; i < burn_preview.length; ++i)
+            burn_preview[i].transparent = false
     }
 
     check_stick(brick)
     {
-        if(isIn(brick.modifier, [ModifierType.fire, ModifierType.ice]))
+        if(!isIn(brick.modifier, StickableModifiers))
             return false
-        let neighbors = this.get_brick_neighbors_no_corners(brick)
-        if(neighbors.length > 0)
+        let neighbours = this.get_brick_neighbours_no_corners(brick)
+        for(let i = 0; i < neighbours.length; ++i)
         {
-            
-            for(let i = 0; i < neighbors.length; ++i)
+            let neighbour = neighbours[i]
+            if(isIn(neighbour.modifier, StickableModifiers))
             {
-                if(isIn(neighbors[i].modifier, [ModifierType.fire, ModifierType.ice]))
-                    continue
-                else if(brick.modifier == ModifierType.glue || neighbors[i].modifier == ModifierType.glue)
+                if(neighbour.modifier == ModifierType.glue || brick.modifier == ModifierType.glue)
                     return true
             }
-            return false
         }
+        return false
     }
 }
