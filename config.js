@@ -5,16 +5,19 @@ const config =
     "start_delay_easy": 1000, // (900-1100)
     "start_delay_medium": 800, // (700-900)
     "start_delay_hard": 600, // (500-700)
-    "tick_delay_step": 5, //(1-20)
-    "min_tick_delay": 150, // (100-300)
+    "tick_delay_step": 3, //(1-20)
+    "min_tick_delay": 200, // (100-300)
 
     /* scores (0-1000) */
     "score_for_first_line": 250,
     "score_for_soft_drop": 1,
     "score_for_hard_drop": 2,
     
-    /* score for line are multipled by multiplier for every line (2-10) */
+    /* score for line are multipled by multiplier for each line (2-10) */
     "line_combo_multiplier": 2,
+
+    /* score for lines are multipled by multiplier when you use recursive gravity (2-10) */
+    "recursive_gravity_multiplier": 2,
 
     /* default settings */
     "sounds": true,
@@ -37,7 +40,6 @@ const config =
     "burning": 1,
     "steel": 1,
     "glue": 1,
-    "oil": 1,
 
     /* Chance to spawn the specified brick (0-1000) */
     "bricks_1px": 1,
