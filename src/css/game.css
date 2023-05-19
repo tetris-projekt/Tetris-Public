@@ -107,6 +107,7 @@
     display: grid;
     place-content: center;
     font-size: 1.6rem;
+    overflow: hidden;
     font-weight: 700;
     background-size: cover;
 }
@@ -131,23 +132,23 @@
     .window.game #controls
     {
         display: inline-block;
-    }    
+    }
 }
 
 .window.game .control
 {
-    height: 17rem
+    height: 20rem
 }
 
 .window.game .control.hard-drop
 {
-    display: block;
+    display: block;    
     margin-inline: auto;
 }
 
-.window.game .control.reverse
+.window.game #controls.reverse
 {
-    transform: rotate(180deg);
+    transform: rotate(180deg) scaleX(-1)
 }
 
 .window.game #board .pixel.empty
@@ -221,13 +222,6 @@
 .window.game .pixel.steel
 {
     background-image: url("../img/game/pixels/steel.png");
-    background-color: none;
-    border-color: #9c9c9c;
-}
-
-.window.game .pixel.oil
-{
-    background-image: url("../img/game/pixels/oil.png");
     background-color: none;
     border-color: #9c9c9c;
 }
