@@ -33,6 +33,12 @@ body
     right: calc(((100% - 100rem) / 2));
 }
 
+#screen
+{
+    width: 100vw;
+    height: 100vh;
+}
+
 .display:is(.game, .windows)
 {
     margin: 0 auto;
