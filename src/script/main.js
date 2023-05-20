@@ -60,7 +60,7 @@ function preload_imgs()
 
 function set_listeners()
 {
-    document.onblur = () =>
+    document.body.onblur = () =>
     {
         if(game != null && game.state == GameState.active)
             pause()
