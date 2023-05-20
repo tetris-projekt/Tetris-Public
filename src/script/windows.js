@@ -13,10 +13,12 @@ const windows =
 {
     "main_windows":
     `
-        <div id="baner"><img src="${get_src("main", "baner")}" id="baner-img"></img></div>
-        <div class="windows display"></div>
-        <div class="game display"></div>
-        <img src="${get_src("main", "footer")}" id="footer"></img>
+        <div id="screen">
+            <div id="baner"><img src="${get_src("main", "baner")}" id="baner-img"></img></div>
+            <div class="windows display"></div>
+            <div class="game display"></div>
+            <img src="${get_src("main", "footer")}" id="footer"></img>
+        </div>
     `,
     "info": 
     `
