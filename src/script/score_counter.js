@@ -23,9 +23,9 @@ class ScoreCounter
         let score = 0
         if(lines > 0)
         {
-            score = data.score_for_first_line
+            score = data.score.first_line
             for(let i = 0; i < lines; ++i)
-                score *= data.line_combo_multiplier
+                score *= data.score.line_combo_multiplier
         }
         return score
     }
@@ -61,7 +61,7 @@ class ScoreCounter
         {
             score = this.count_score_for_making_lines(lines.length + this.prev_lines)
             if(this.recursive_gravity_multiplier == true)
-                score *= data.recursive_gravity_multiplier
+                score *= data.score.recursive_gravity_multiplier
             score -= this.count_score_for_making_lines(this.prev_lines)
             score += this.count_score_for_multipliers(lines)
             this.prev_lines = lines.length
@@ -71,26 +71,26 @@ class ScoreCounter
 
     count_score_for_soft_drop()
     {
-        return data.score_for_soft_drop
+        return data.score.soft_drop
     }
 
     count_score_for_hard_drop(distance)
     {
-        return distance * data.score_for_hard_drop
+        return distance * data.score.hard_drop
     }
 
     count_score_for_compress()
     {
-        return data.score_for_compressing
+        return data.score.compressing
     }
 
     count_score_for_burning(quantity)
     {
-        return quantity * data.score_for_burning
+        return quantity * data.score.burning
     }
 
     count_score_for_melting(quantity)
     {
-        return quantity * data.score_for_melting
+        return quantity * data.score.melting
     }
 }

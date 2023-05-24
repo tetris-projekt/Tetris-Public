@@ -16,7 +16,7 @@ class Pixel
         pixel.selected = false
         pixel.ghost = false
         pixel.transparent = false
-        pixel.modifier = ModifierType.none
+        pixel.modifier = null
         return pixel
     }
     static copy(pixel)
@@ -40,7 +40,7 @@ class Pixel
 
     clear()
     {
-        this.modifier = ModifierType.none
+        this.modifier = null
         this.color = "empty"
         this.content = 0
         this.selected = false
@@ -52,7 +52,7 @@ class Pixel
     {
         if(this.modifier == ModifierType.ice)
         {
-            this.modifier = ModifierType.none
+            this.modifier = null
             return false
         }
         else

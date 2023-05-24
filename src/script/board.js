@@ -100,11 +100,6 @@ class Board
         }
     }
 
-    coords_are_in_range(x, y)
-    {
-        return (x >= 0 && x < this.width && y < this.height)
-    }
-
     hard_drop(brick)
     {
         if(!this.is_space_for_brick(brick))
@@ -142,10 +137,20 @@ class Board
         {
             let x = brick.get_pixel_x(i)
             let y = brick.get_pixel_y(i)
-            if(!this.coords_are_in_range(x, y))
-                return false
-            if(this.coords_exist(x, y) && !this.get_pixel(x, y).is_empty())
+            if(!this.coords_exist(x, y) || (this.coords_exist(x, y) && !this.get_pixel(x, y).is_empty()))
                 return false    
+        }
+        return true
+    }
+
+    brick_is_in_range(brick)
+    {
+        for(let i = 0; i < brick.pixels.length; ++i)
+        {
+            let x = brick.get_pixel_x(i)
+            let y = brick.get_pixel_y(i)
+            if(!this.coords_exist(x, y))
+                return false
         }
         return true
     }

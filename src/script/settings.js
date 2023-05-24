@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------------------------------*/
 
-/*                                              BRICK                                                 */
+/*                                            SETTINGS                                                */
 
 /*----------------------------------------------------------------------------------------------------*/
 
@@ -8,44 +8,39 @@ class Settings
 {
     constructor(ui)
     {
-        this.properties = {}
         this.ui = ui
-        let storage_settings = JSON.parse(localStorage.getItem("settings"))
-        this.read(storage_settings)
+        this.properties = Settings.get_properties()
     }
 
-    set_default()
+    static get_properties()
     {
-        for(let i = 0; i < data.SettingsNamesList.length; ++i)
+        const storage_properties = storage_get("settings")
+        let properties = new Object()
+        if(storage_properties != null && typeof(storage_properties) == "object")
         {
-            let property_name = data.SettingsNamesList[i]
-            this.properties[property_name] = data.default_settings[property_name]
-        }
-    }
-
-    get()
-    {
-        return this.properties
-    }
-    
-    read(storage_settings)
-    {
-        for(let i = 0; i < data.SettingsNamesList.length; ++i)
-        {
-            let property = data.SettingsNamesList[i]
-            if(storage_settings != null && typeof(storage_settings) == "object")
+            for(let i = 0; i < data.SettingsPropertyNames.length; ++i)
             {
-                if(isIn(storage_settings[property], [true, false]))
-                    this.properties[property] = storage_settings[property]
+                let property = data.SettingsPropertyNames[i]
+                if(isIn(storage_properties[property], [true, false]))
+                    properties[property] = storage_properties[property]
+                else
+                    properties[property] = data.default_settings_properties[property]
             }
-            else
-                this.properties[property] = data.default_settings[property]
         }
+        else
+        {
+            for(let i = 0; i < data.SettingsPropertyNames.length; ++i)
+            {
+                let property = data.SettingsPropertyNames[i]
+                properties[property] = data.default_settings_properties[property]
+            }
+        }
+        return properties
     }
 
     save()
     {
-        localStorage.setItem("settings", JSON.stringify(this.properties))
+        storage_set("settings", this.properties)
     }
 
     toggle(property_name)
@@ -55,15 +50,13 @@ class Settings
         else
             this.properties[property_name] = true
         this.ui.refresh_checkbox(property_name, this.properties[property_name])
+        try_to_play_sound("toggle")
     }
 
     edit()
     {
+        open_window("windows", "settings")
         this.ui.create_properties()
-        for(let i = 0; i < data.SettingsNamesList.length; ++i)
-        {
-            let property_name = data.SettingsNamesList[i]
-            this.ui.refresh_checkbox(property_name, this.properties[property_name])
-        }
+        this.ui.refresh_checkboxes(this.properties)
     }
 }

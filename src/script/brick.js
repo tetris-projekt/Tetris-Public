@@ -4,18 +4,27 @@
 
 /*----------------------------------------------------------------------------------------------------*/
 
+const BrickType = 
+{
+    custom: 0,
+    p1: 1,
+    p2: 2,
+    p3: 3,
+    p4: 4,
+    p5: 5,
+}
+
 const ModifierType = 
 {
-    none: "",
-    ice: "ice",
-    fire: "fire",
-    steel: "steel",
-    glue: "glue",
+    ice: 1,
+    fire: 2,
+    steel: 3,
+    glue: 4,
 }
 
 const BurnableModifiers = 
 [
-    ModifierType.none,
+    null,
     ModifierType.glue,
     ModifierType.ice,
     ModifierType.fire,
@@ -24,7 +33,7 @@ const BurnableModifiers =
 const StickableModifiers = 
 [
     ModifierType.glue,
-    ModifierType.none,
+    null,
 ]
 
 class Brick
@@ -43,7 +52,7 @@ class Brick
         brick.y = y
         brick.rotate = true
         brick.move = true
-        brick.modifier = ModifierType.none
+        brick.modifier = null
         for(let i = 0; i < vectors_list.length - 1; ++i)
         {
             let vect = vectors_list[i]
@@ -134,6 +143,20 @@ class Brick
         {
             this.pixels[i].modifier = modifier
         }
+    }
+
+    get_farthest_vector()
+    {
+        let farthest_vector = 0
+        for(let i = 0; i < this.pixels.length; ++i)
+        {
+            let pixel = this.pixels[i]
+            if(Math.abs(pixel.x) > farthest_vector)
+                farthest_vector = Math.abs(pixel.x)
+            if(Math.abs(pixel.y) > farthest_vector)
+                farthest_vector = Math.abs(pixel.y)
+        }
+        return farthest_vector
     }
 
     ghostify()

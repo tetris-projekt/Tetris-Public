@@ -41,7 +41,7 @@ document.onkeydown = event =>
                 try_to_move_right()
             return
             case data.keys.rotate:
-                if(game.properties.normal_mode == false)
+                if(game.data.normal_mode == false)
                     try_to_rotate()
                 else
                     try_to_soft_drop()
@@ -50,7 +50,7 @@ document.onkeydown = event =>
                 try_to_hard_drop()
             return
             case data.keys.soft_drop:
-                if(game.properties.normal_mode == false)
+                if(game.data.normal_mode == false)
                     try_to_soft_drop()
                 else
                     try_to_rotate()
@@ -72,7 +72,7 @@ document.onkeyup = event =>
                 key_states.restart = false
             return
             case data.keys.soft_drop:
-                if(game.properties.normal_mode == false)
+                if(game.data.normal_mode == false)
                     reset_soft_drop()
                 else
                     reset_rotate()
@@ -84,7 +84,7 @@ document.onkeyup = event =>
                 reset_move_right()
             return
             case data.keys.rotate:
-                if(game.properties.normal_mode == false)
+                if(game.data.normal_mode == false)
                     reset_rotate()
                 else
                     reset_soft_drop()
@@ -134,9 +134,14 @@ function try_to_pause()
     if(key_states.pause == false)
     {
         if(game.state == GameState.active)
-            pause()
+        {
+            pause_game()
+            show_pause()
+        }
         else if(game.state == GameState.paused)
-            resume()
+        {
+            resume_game()
+        }
         key_states.pause = true
     }
 }
@@ -145,7 +150,21 @@ function try_to_restart()
 {
     if(key_states.restart == false)
     {
-        really_restart()
+        if(game.state == GameState.end)
+        {
+            restart_game()
+        }
+        else
+        {
+            if(game.state == GameState.active)
+            {
+                pause_game()
+            }
+            if(cur_window != "really-restart")
+            {
+                show_really_restart()
+            }
+        }
         key_states.restart = true
     }
 }

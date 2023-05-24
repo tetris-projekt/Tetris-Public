@@ -23,6 +23,16 @@ const config =
     "sounds": true,
     "music": true,
     "ghost": true,
+
+    /* default editor properties */
+    "move_center": false,
+    "custom": false,
+    "all_1px": false,
+    "all_2px": false,
+    "all_3px": false,
+    "all_4px": true,
+    "all_5px": false,
+    "modified": false,
     
     /* ↓↓↓ ONLY IN EXTENDED AND EXTREME GAME MODE! ↓↓↓ */
 
@@ -43,17 +53,11 @@ const config =
 
     /* Chance to spawn the specified brick (0-1000) */
     "bricks_1px": 1,
-    "bricks_2px": 5,
-    "bricks_3px": 5,
-    "bricks_4px": 20,
-    "bricks_5px": 10,
-    "bricks_custom": 0,
-
-    /* vectors list for custom brick (copy from editor) */
-    "vectors_list":
-    [
-        // example: "[[0,-1], [-1,0], [1,0], [0,1], false],"
-    ],
+    "bricks_2px": 1,
+    "bricks_3px": 2,
+    "bricks_4px": 7,
+    "bricks_5px": 8,
+    "bricks_custom": 8,
 
     /* scores (0-1000) */
     "score_for_compressing": 50,

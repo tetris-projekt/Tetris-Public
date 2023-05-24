@@ -11,60 +11,30 @@ class MainUI
         this.music =
         {
             main: null,
-            bass: null,
+            pause: null,
         }
     }
 
     set_music(game_mode)
     {
-        let music = data.GameModeToMusic[game_mode]
-        this.music.main = new Audio(`src/audio/music/${music.main}`)
-        this.music.bass = new Audio(`src/audio/music/${music.bass}`)
-        this.music.main.preload = true
-        this.music.bass.preload = true
+        this.music.main = new Audio(data.GameModeToMusic[game_mode])
         this.music.main.loop = true
-        this.music.bass.loop = true
     }
 
-    mute_bass()
+    pause_music()
     {
-        this.music.bass.volume = 0.001
-    }
-
-    unmute_bass()
-    {
-        this.music.bass.volume = 1
+        this.music.main.pause()
     }
 
     play_music()
     {
-        this.music.main.oncanplay = () =>
-        {
-            this.try_to_play()
-        }
-        this.music.bass.oncanplay = () =>
-        {
-            this.try_to_play()
-        }
-        this.try_to_play()
+        this.music.main.play()
     }
 
-    try_to_play()
+    play_sound(sound_name)
     {
-        if(game != null && game.state != GameState.end && game.properties.settings.music == true)
-        {
-            if(this.music.main.readyState == 4 && this.music.bass.readyState == 4)
-            {
-                this.music.main.play()
-                this.music.bass.play()
-            }
-        }
-    }
-
-    stop_music()
-    {
-        this.music.main.pause()
-        this.music.bass.pause()
+        let sound = new Audio(get_src("sounds", sound_name, "audio"))
+        sound.play()
     }
 
     slice_number(number)
@@ -129,6 +99,11 @@ class MainUI
         return document.getElementsByClassName(class_name)[0]
     }
 
+    get_class_from(element, class_name)
+    {
+        return element.getElementsByClassName(class_name)
+    }
+
     is_display_hidden(display)
     {
         return display.classList.contains("disabled")
@@ -141,7 +116,7 @@ class MainUI
             this.show_display(display_type)
         display.innerHTML = windows[window_name]
         this.turn_off_dragging_imgs(display)
-        if(isIn(window_name, ["pause", "really-quit", "really-restart"]))
+        if(isIn(window_name, data.transparent_windows))
             this.display_add_opacity(display)
         else
             this.display_remove_opacity(display)
@@ -174,14 +149,15 @@ class MainUI
     refresh_menu_game_mode(game_mode)
     {
         this.get_first_from_class("game-mode display").src = data.GameModeToImgs[game_mode]
+        this.refresh_interaction("button editor", game_mode != GameMode.custom)
     }
 
-    create_page_number()
+    create_page_number_display()
     {
-        let page_number = this.get_first_from_class("page-number display")
-        page_number.innerHTML = `<img class="cur-page value"></img>`
-        page_number.innerHTML += this.str_number_to_div_tag(data.page_number_separator + data.number_of_tutorial_pages)
-        this.turn_off_dragging_imgs(page_number)
+        const page_number_display = this.get_first_from_class("page-number display")
+        page_number_display.innerHTML = `<img class="cur-page value"></img>`
+        page_number_display.innerHTML += this.str_number_to_div_tag(data.page_number_separator + data.number_of_tutorial_pages)
+        this.turn_off_dragging_imgs(page_number_display)
     }
 
     refresh_page(page_suffix)
@@ -190,7 +166,7 @@ class MainUI
         this.get_first_from_class("cur-page").src = get_src("digits", page_suffix)
     }
 
-    refresh_arrow(cls, disabled)
+    refresh_interaction(cls, disabled)
     {
         if(disabled == true)
             this.get_first_from_class(cls).classList.add("disabled-animation")
@@ -200,8 +176,8 @@ class MainUI
 
     refresh_arrows(cls_selector, disable_left, disable_right)
     {
-        this.refresh_arrow(`${cls_selector} left`, disable_left)
-        this.refresh_arrow(`${cls_selector} right`, disable_right)
+        this.refresh_interaction(`${cls_selector} left`, disable_left)
+        this.refresh_interaction(`${cls_selector} right`, disable_right)
     }
 
     display_add_opacity(display)

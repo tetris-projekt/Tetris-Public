@@ -41,7 +41,7 @@ body
 
 .display:is(.game, .windows)
 {
-    margin: 0 auto;
+    margin-inline: auto;
     text-align: center;
     background-color: var(--WINDOW_BG_COLOR);
     height: calc(100vh - 16rem);
@@ -68,7 +68,7 @@ body
 
 .window
 {
-    margin: 0 auto;
+    margin-inline: auto;
     box-sizing: border-box;
 }
 
@@ -85,7 +85,7 @@ body
 #baner
 {
     width: 100rem;
-    margin: 0 auto;
+    margin-inline: auto;
     background-color: var(--WINDOW_BG_COLOR);
 }
 
@@ -118,22 +118,30 @@ body
 
 @media not all and (hover: none)
 {
-    .button:not(.disabled-animation):hover:not(:active)
+    .button:hover:not(:active)
     {
         transition: 0.06s;
         transform: scale(1.05);
         opacity: 70%;
     }
-    .button:not(.disabled-animation):hover:active
+    .button:hover:active
     {
         transform: scale(0.95);
         opacity: 50%;
     }
+    .window.editor #edit .pixel.empty:hover
+    {
+        background-color: #00ffff;
+        border-color: #00e0e0;
+        border-width: 0.8rem;
+        opacity: 20%;
+    }
 }
 
-.button.disabled-animation
+.disabled-animation
 {
     opacity: 65%;
+    pointer-events: none;
 }
 
 /*-----------------HOVER----------------*/
@@ -160,10 +168,10 @@ body
 
 .window.menu #play
 {
-    height: 10rem;
+    height: 8rem;
 }
 
-.window.menu img:not(#play, .line, .line2)
+.window.menu img:not(#play, .line)
 {
     height: 5rem;
 }
@@ -181,7 +189,7 @@ body
 .selector
 {
     height: 5rem;
-    margin: 0 auto;
+    margin-inline: auto;
 }
 
 .button.right
@@ -198,9 +206,111 @@ body
 
 
 
+/*----------------EDITOR----------------*/
+
+.window.editor #editor
+{
+    height: 8rem;
+}
+
+.window.editor #brick-editor
+{
+    margin-block: 4rem;
+    width: 42%;
+    float: left;
+}
+
+.window.editor #editor-properties
+{
+    margin-block: 2rem;
+    width: 46%;
+    float: left;
+}
+
+.window.editor .property-name
+{
+    float: left;
+    height: 100%;
+}
+
+.window.editor .toggle
+{
+    float: right;
+    height: 100%;
+}
+
+.window.editor #editor-properties .property
+{
+    height: 5em;
+    width: 30rem;
+    float: right;
+    margin-block: 0.5rem;
+}
+
+.window.editor #brick-editor .property.move-center
+{
+    height: 4em;
+    width: 31.2rem;
+    margin-inline: auto;
+}
+
+.window.editor :is(#add, #delete)
+{
+    height: 5rem;
+}
+
+.window.editor #brick-index
+{
+    display: inline-block;
+}
+
+.window.editor .selector.brick img
+{
+    height: 5rem;
+}
+
+.window.editor #brick-selector-box
+{
+    margin-top: 1rem;
+    width: 31.2rem;
+    margin-inline: auto;
+}
+
+.window.editor #buttons-box
+{
+    margin-top: 1.5rem;
+    width: 31.2rem;
+    margin-inline: auto;
+}
+
+.window.editor .selector.brick
+{
+    aspect-ratio: 5 / 1;
+    clear: both;
+    margin-inline: auto;
+}
+
+.window.editor #cross
+{
+    --PIXEL-SIZE: 20%;
+    pointer-events: none;
+    position: absolute;
+    height: 3rem;
+    left: calc(50% - 1.5rem);
+    top: calc(2 * var(--PIXEL-SIZE) + (var(--PIXEL-SIZE) - 3rem) / 2);
+}
+
+.window.editor #cross.move
+{
+    transform: translate(72.5%, 72.5%);
+}
+/*----------------EDITOR----------------*/
+
+
+
 /*----------------PAUSE-----------------*/
 
-.window.pause img:not(#game-paused, .line, .line2)
+.window.pause img:not(#game-paused, .line)
 {
     height: 6rem;
 }
@@ -257,13 +367,13 @@ body
 
 /*---------------SETTINGS---------------*/
 
-.window.settings img:not(#settings, .line, .line2, .button)
+.window.settings .property-name
 {
     float: left;
     height: 100%;
 }
 
-.window.settings .button:not(#save)
+.window.settings .toggle
 {
     float: right;
     height: 100%;
@@ -273,8 +383,7 @@ body
 {
     height: 6rem;
     width: 50%;
-    clear: both;
-    margin: 0 auto;
+    margin-inline: auto;
 }
 
 .window.settings #settings, #save
@@ -288,7 +397,7 @@ body
 
 /*----------------REALLY----------------*/
 
-.window.really img:not(#really, .line, .line2)
+.window.really img:not(#really, .line)
 {
     height: 6rem;
 }
@@ -310,7 +419,7 @@ body
 
 .window.really #buttons
 {
-    margin: 0 auto;
+    margin-inline: auto;
     margin-top: 4rem;
 }
 
@@ -357,7 +466,7 @@ body
 .window.best-scores .value
 {
     clear: both;
-    margin: 0 auto;
+    margin-inline: auto;
     width: fit-content;
     height: 2rem;
 }

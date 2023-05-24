@@ -52,7 +52,7 @@ class ScoreBoard
     read()
     {
         this.score_board = new Array()
-        let score_board_storage = JSON.parse(localStorage.getItem("score_board"))
+        let score_board_storage = storage_get("score_board")
         if(typeof(score_board_storage) == "object" && score_board_storage != null && score_board_storage.length > 0)
         {
             for(let i = 0; i < score_board_storage.length; ++i)
@@ -125,11 +125,11 @@ class ScoreBoard
         this.score_board = new Array()
         this.save()       
         this.show()
+        try_to_play_sound("clear_scores")
     }
 
     save()
     {
-        let score_board = JSON.stringify(this.score_board)
-        localStorage.setItem("score_board", score_board)
+        storage_set("score_board", this.score_board)
     }
 }

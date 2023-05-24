@@ -68,13 +68,13 @@ class GameUI
         {
             for(let x = 0; x < board.width; ++x)
             {
-                let screen_pixel = main_ui.get_id(`${id_prefix + y};${x}`)
+                const screen_pixel = main_ui.get_id(`${id_prefix + y};${x}`)
                 let board_pixel = board.get_pixel(x, y)
-                screen_pixel.className = `pixel`
-                if(board_pixel.modifier == ModifierType.none)
-                    screen_pixel.classList.add(board_pixel.color)
+                screen_pixel.className = "pixel"
+                if(board_pixel.modifier != null)
+                    screen_pixel.classList.add(data.ModifierTypeToClass[board_pixel.modifier])
                 else
-                    screen_pixel.classList.add(board_pixel.modifier)
+                    screen_pixel.classList.add(board_pixel.color)
                 if(board_pixel.transparent == true)
                     screen_pixel.classList.add("transparent")
                 if(board_pixel.content == 0 || isIn(board_pixel.modifier, [ModifierType.ice, ModifierType.fire]))
