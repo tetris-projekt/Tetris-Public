@@ -72,7 +72,7 @@ class GameUI
                 let board_pixel = board.get_pixel(x, y)
                 screen_pixel.className = "pixel"
                 if(board_pixel.modifier != null)
-                    screen_pixel.classList.add(data.ModifierTypeToClass[board_pixel.modifier])
+                    screen_pixel.classList.add(data.ModifierTypeToClass[board_pixel.modifier], "modified")
                 else
                     screen_pixel.classList.add(board_pixel.color)
                 if(board_pixel.transparent == true)

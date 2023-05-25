@@ -222,8 +222,7 @@ class Game
             this.remove_ghost()
             this.ui.refresh_board(this.board)
             this.end()
-            show_end_screen()
-            this.try_to_play_sound("end")
+            show_game_over()
         }
     }
 

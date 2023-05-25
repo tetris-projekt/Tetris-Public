@@ -62,11 +62,12 @@ function setup()
     preload_content()
     main_ui = new MainUI()
     main_ui.setup()
-    set_autopause_listeners()
+    main_ui.refresh_theme(Settings.get_properties()["high_contrast"])
     if(storage_get("enabled") == true)
         show_menu()
     else
         open_window("windows", "info")
+    set_autopause_listeners()
 }
 
 function preload_content()
@@ -95,10 +96,13 @@ function set_autopause_listeners()
 {
     document.body.onblur = () =>
     {
-        if(game != null && game.state == GameState.active)
+        if(Settings.get_properties()["auto_pause"] == true)
         {
-            pause_game()
-            show_pause()
+            if(game != null && game.state == GameState.active)
+            {
+                pause_game()
+                show_pause()
+            }
         }
     }
     main_ui.get_id("baner-img").onclick = () =>
@@ -269,9 +273,21 @@ function show_how_to_play()
 function go_back()
 {
     if(game != null)
-        open_window("windows", "pause")
+    {
+        if(game.state == GameState.paused)
+        {
+            open_window("windows", "pause")
+        }
+        else
+        {
+            main_ui.hide_display("windows")
+            cur_window = "game"
+        }
+    }
     else
+    {
         show_menu()
+    }
     try_to_play_sound("back")
 }
 
@@ -341,9 +357,10 @@ function game_end()
     save_score(this.score, this.lines)
 }
 
-function show_end_screen()
+function show_game_over()
 {
-    
+    open_window("windows", "game-over")
+    this.try_to_play_sound("end")
 }
 
 const game_tick = () =>

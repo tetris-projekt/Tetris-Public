@@ -23,6 +23,8 @@ const config =
     "sounds": true,
     "music": true,
     "ghost": true,
+    "auto_pause": true,
+    "high_contrast": false,
 
     /* default editor properties */
     "move_center": false,

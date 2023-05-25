@@ -1,6 +1,5 @@
 :root
 {
-    --WINDOW_BG_COLOR: #161616;
     font-size: 1vh;
 }
 
@@ -19,9 +18,7 @@ body
     user-select: none;
     margin: 0;
     text-align: center;
-    background-color: #323232;
     overflow: hidden;
-    cursor: url("../img/main/cursor.png") 15 15, auto;
 }
 
 #footer
@@ -35,15 +32,58 @@ body
 
 #screen
 {
+    cursor: url("../img/main/cursor.png") 15 15, auto;
+    --WINDOW-BG-COLOR: #161616;
+    --SCREEN-BG-COLOR: #323232;
+    --BORDER-COLOR: #222222;
+    --BORDER: 0.6rem solid var(--BORDER-COLOR);
+    --TABLE-BG-COLOR: #050505;
     width: 100vw;
     height: 100vh;
+    background-color: var(--SCREEN-BG-COLOR);
+}
+
+#screen.dark
+{
+    cursor: url("../img/main/cursor_high_contrast.png") 15 15, auto;
+    --WINDOW-BG-COLOR: #f0f0f0;
+    --SCREEN-BG-COLOR: #d0d0d0;
+    --BORDER-COLOR: #000000;
+    --BORDER: 0.6rem solid var(--BORDER-COLOR);
+    --TABLE-BG-COLOR: #fcfcfc;
+}
+
+#screen.dark img:not(:is(.pixel, #cross))
+{
+    filter: brightness(0);
+}
+
+#screen.dark .pixel.modified.transparent
+{
+    filter: brightness(.4);
+}
+
+#screen.dark :is(#edit, #board, #preview) .pixel:not(:is(.empty, .transparent, .modified))
+{
+    border: 0.8rem solid #000000;
+    background-color: #000000;
+    box-shadow: 0 0 1rem #000000;
+    position: relative;
+}
+
+#screen.dark .pixel:is(.transparent, .modified)
+{
+    border: 0.4rem solid black;
+    border-radius: 0.8rem; 
+    background-color: white;
+    opacity: 1;
 }
 
 .display:is(.game, .windows)
 {
     margin-inline: auto;
     text-align: center;
-    background-color: var(--WINDOW_BG_COLOR);
+    background-color: var(--WINDOW-BG-COLOR);
     height: calc(100vh - 16rem);
 }
 
@@ -86,7 +126,7 @@ body
 {
     width: 100rem;
     margin-inline: auto;
-    background-color: var(--WINDOW_BG_COLOR);
+    background-color: var(--WINDOW-BG-COLOR);
 }
 
 #baner-img
@@ -129,12 +169,26 @@ body
         transform: scale(0.95);
         opacity: 50%;
     }
-    .window.editor #edit .pixel.empty:hover
+    #screen:not(.dark).window.editor #edit .pixel.empty:hover
     {
         background-color: #00ffff;
         border-color: #00e0e0;
         border-width: 0.8rem;
         opacity: 20%;
+    }
+
+    #screen.dark .window.editor #edit .pixel.empty:hover
+    {
+        border: 0.4rem solid black;
+        border-radius: 0.8rem; 
+        background-color: white;
+    }
+
+    #screen.dark .window.editor #edit .pixel:not(.empty):hover
+    {
+        border: 0.8rem solid #303030;
+    background-color: #303030;
+    box-shadow: 0 0 1rem #303030;
     }
 }
 
@@ -152,12 +206,14 @@ body
 
 .window.info #info
 {
-    height: 10rem;
+    margin-top: 1rem;
+    height: 3.5rem;
 }
 
 .window.info #ok
 {
-    height: 6rem;
+    margin-top: 3rem;
+    height: 5rem;
 }
 
 /*-----------------INFO-----------------*/
@@ -298,6 +354,7 @@ body
     height: 3rem;
     left: calc(50% - 1.5rem);
     top: calc(2 * var(--PIXEL-SIZE) + (var(--PIXEL-SIZE) - 3rem) / 2);
+    z-index: 1;
 }
 
 .window.editor #cross.move
@@ -381,7 +438,7 @@ body
 
 .window.settings .property
 {
-    height: 6rem;
+    height: 5rem;
     width: 50%;
     margin-inline: auto;
 }
@@ -392,6 +449,23 @@ body
 }
 
 /*---------------SETTINGS---------------*/
+
+
+
+
+/*--------------GAME-OVER---------------*/
+
+.window.game-over #game-over
+{
+    height: 8rem;
+}
+
+.window.game-over :is(#restart, #back, #menu)
+{
+    height: 6rem;
+}
+
+/*--------------GAME-OVER---------------*/
 
 
 

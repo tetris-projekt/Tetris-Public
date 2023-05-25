@@ -109,6 +109,14 @@ class MainUI
         return display.classList.contains("disabled")
     }
 
+    refresh_theme(dark)
+    {
+        if(dark == true)
+            this.get_id("screen").classList.add("dark")
+        else
+            this.get_id("screen").classList.remove("dark")
+    }
+
     refresh_window(display_type, window_name)
     {
         const display = this.get_first_from_class(`${display_type} display`)

@@ -34,7 +34,6 @@ const windows =
     "menu":
     `
         <div class="window menu">
-            <br>
             ${line("long")}
             <img src="${get_src("menu", "play")}" id="play" class="button" onclick="play_game()"></img>
             ${line("long")}
@@ -226,6 +225,24 @@ const windows =
             <img src="${get_src("how_to_play", "back")}" id="back" class="button" onclick="go_back()"></img>
             ${line("short")}
             <div id="clear-box"></div>
+        </div>
+    `,
+    "game-over":
+    `
+        <div class="window game-over">
+            <br>
+            ${line("long")}
+            <img src="${get_src("game_over", "game_over")}" id="game-over"></img>
+            ${line("long")}
+            <br>
+            ${line("short")}
+            <img src="${get_src("pause", "restart")}" id="restart" class="button" onclick="restart_game()"></img>
+            ${line("short")}
+            <img src="${get_src("how_to_play", "back")}" id="back" class="button" onclick="go_back()"></img>
+            ${line("short")}
+            <img src="${get_src("game", "menu")}" id="menu" class="button" onclick="show_menu(); try_to_play_sound('open')"></img>
+            ${line("short")}
+
         </div>
     `,
 }

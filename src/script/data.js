@@ -42,7 +42,7 @@ const data =
     max_custom_bricks_number: 99,
     normal_number: 8,
 
-    transparent_windows: ["pause", "really-quit", "really-restart", "end-screen"],
+    transparent_windows: ["pause", "really-quit", "really-restart", "game-over"],
 
     keys:
     {
@@ -86,13 +86,15 @@ const data =
 
     ScorePropertyNames: ["score", "lines", "game_mode", "speed", "date"],
 
-    SettingsPropertyNames: ["sounds","music","ghost"],
+    SettingsPropertyNames: ["sounds", "music", "ghost", "auto_pause", "high_contrast"],
     
     SettingsPropertyNamesToImgs:
     {
         "sounds": get_src("settings", "sounds"),
         "music": get_src("settings", "music"),
         "ghost": get_src("settings", "ghost"),
+        "auto_pause": get_src("settings", "auto_pause"),
+        "high_contrast": get_src("settings", "high_contrast"),
     },
 
     default_settings_properties:
@@ -100,6 +102,8 @@ const data =
         "sounds": get_config_bool("sounds", true),
         "music": get_config_bool("music", true),
         "ghost": get_config_bool("ghost", true),
+        "auto_pause": get_config_bool("auto_pause", true),
+        "high_contrast": get_config_bool("high_contrast", false),
     },
     
     BrickTypeToImgs:

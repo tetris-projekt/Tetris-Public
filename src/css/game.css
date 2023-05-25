@@ -1,10 +1,4 @@
 /*-----------------GAME-----------------*/
-:root
-{
-    --BORDER-COLOR: #222222;
-    --BORDER: 0.6rem solid var(--BORDER-COLOR);
-    --TABLE-BG-COLOR: #050505;
-}
 
 .window.game #board
 {
@@ -122,6 +116,7 @@
     overflow: hidden;
     font-weight: 700;
     background-size: cover;
+    color: var(--TABLE-BG-COLOR);
 }
 
 .window.editor #edit .pixel
