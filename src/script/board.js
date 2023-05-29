@@ -49,6 +49,31 @@ class Board
         }
     }
 
+    is_space_for_new_brick(farthest_vector)
+    {
+        for(let x = 0; x < this.width; ++x)
+        {
+            for(let y = 0; y <= farthest_vector * 2 + 1; ++y)
+            {
+                if(!this.coords_exist(x, y) || !this.get_pixel(x, y).is_empty())
+                    return false
+            }
+        }
+        return true
+    }
+
+    find_new_brick_y(brick)
+    {
+        let farthest_vector = brick.get_farthest_vector()
+        if(this.is_space_for_new_brick(farthest_vector))
+            return farthest_vector
+        let test_brick = Brick.copy(brick)
+        test_brick.y = 0
+        while(!this.brick_is_in_range(test_brick))
+            ++test_brick.y
+        return test_brick.y
+    }
+
     select_brick(brick)
     {
         for(let i = 0; i < brick.pixels.length; ++i)

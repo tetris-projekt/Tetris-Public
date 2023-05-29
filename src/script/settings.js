@@ -51,8 +51,6 @@ class Settings
             this.properties[property_name] = true
         this.ui.refresh_checkbox(property_name, this.properties[property_name])
         try_to_play_sound("toggle")
-        if(property_name == "high_contrast")
-            main_ui.refresh_theme(this.properties[property_name])
     }
 
     edit()

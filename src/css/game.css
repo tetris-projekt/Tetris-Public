@@ -7,6 +7,36 @@
     aspect-ratio: 1 / 2;
     float: left;
     background-color: var(--BORDER-COLOR);
+    position: relative;
+}
+
+.window.game #board #combo-display
+{
+    position: absolute;
+    background-color: var(--TABLE-BG-COLOR);
+    width: 90%;
+    margin-top: 31.3rem;
+    left: 5%;
+}
+
+#combo-display img
+{
+    height: 3.5rem;
+}
+
+#combo-display .value
+{
+    display: inline-block;
+}
+
+#combo-display.hidden
+{
+    opacity: 0;
+}
+
+#combo-display:not(.hidden)
+{
+    opacity: .8;
 }
 
 .window.editor #edit
@@ -149,7 +179,7 @@
 
 .window.game .control
 {
-    height: 20rem
+    height: 18rem
 }
 
 .window.game .control.hard-drop

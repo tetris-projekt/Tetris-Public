@@ -84,6 +84,17 @@ const dirs =
             p5: "p5.png",
         },
 
+        combo:
+        {
+            burning: "burning.png",
+            compressing: "compressing.png",
+            game_over: "game_over.png",
+            line: "line.png",
+            melting: "melting.png",
+            multipliers: "multipliers.png",
+            recursive_gravity: "recursive_gravity.png",
+        },
+
         controls:
         {
             hard_drop: "hard_drop.png",
@@ -105,7 +116,10 @@ const dirs =
             "8": "num_8.png",
             "9": "num_9.png",
             "-": "dash.png",
+            "+": "plus.png",
             "/": "slash.png",
+            "*": "multiple.png",
+            " ": "space.png",
         },
 
         game:
@@ -160,7 +174,6 @@ const dirs =
             checkbox_off: "checkbox_off.png",
             checkbox_on: "checkbox_on.png",
             cursor: "cursor.png",
-            cursor_high_contrast: "cursor_high_contrast.png",
             footer: "footer.png",
             left_arrow: "left_arrow.png",
             line: "line.png",
@@ -196,7 +209,6 @@ const dirs =
         settings:
         {
             auto_pause: "auto_pause.png",
-            high_contrast: "high_contrast.png",
             ghost: "ghost.png",
             music: "music.png",
             save: "save.png",

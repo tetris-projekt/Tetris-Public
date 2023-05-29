@@ -47,9 +47,9 @@ class Game
         this.cur_brick = null
         this.ghost = null
         this.burn_preview = null
-        this.score_counter = new ScoreCounter()
-        this.data = game_data
         this.ui = ui
+        this.score_counter = new ScoreCounter(this.ui)
+        this.data = game_data
         this.score = 0
         this.lines = 0
         this.state = GameState.ready_to_start
@@ -115,8 +115,8 @@ class Game
         this.state = GameState.end
         this.button = GameButtons.menu
         this.ui.refresh_button(this.button)
+        save_score(this.score, this.lines, this.data.game_mode, this.data.speed)
         main_ui.pause_music()
-        game_end()
     }
 
     random_number(range)
@@ -183,13 +183,7 @@ class Game
     {
         this.cur_brick = Brick.copy(this.next_brick)
         this.cur_brick.x = get_center_index(this.board.width)
-        this.cur_brick.y = this.cur_brick.get_farthest_vector()
-        if(!this.board.is_space_for_brick(this.cur_brick))
-        {
-            this.cur_brick.y = 0
-            while(!this.board.brick_is_in_range(this.cur_brick))
-                ++this.cur_brick.y
-        }
+        this.cur_brick.y = this.board.find_new_brick_y(this.cur_brick)
     }
 
     try_to_modify(brick)
@@ -218,10 +212,12 @@ class Game
         }
         else
         {
+            
             this.board.add_brick(this.cur_brick)
             this.remove_ghost()
             this.ui.refresh_board(this.board)
             this.end()
+            stop_game_tick()
             show_game_over()
         }
     }
@@ -422,7 +418,8 @@ class Game
     {
         let stats = this.board.burn_brick(brick)
         this.add_score(this.score_counter.count_score_for_burning(stats.burned))
-        this.add_score(this.score_counter.count_score_for_melting(stats.melted))
+        if(stats.melted > 0)
+            this.add_score(this.score_counter.count_score_for_melting(stats.melted))
         this.spawn_next_brick()
         this.try_to_play_sound("burn")
     }
@@ -443,7 +440,7 @@ class Game
                 this.remove_lines(this.find_lines())
                 this.read_selected_brick()
                 if(this.try_to_enable_gravity(this.cur_brick) == true)
-                    this.score_counter.recursive_gravity_multiplier = true
+                    this.add_score(this.score_counter.count_score_for_recursive_gravity())
                 else
                     this.spawn_next_brick()
         }

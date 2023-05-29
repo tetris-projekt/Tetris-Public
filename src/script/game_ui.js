@@ -6,6 +6,13 @@
 
 class GameUI
 {
+
+    constructor()
+    {
+        this.combo_display_timeout = 0
+        this.displaying_combo_messages = false
+        this.combo_messages = new Array()
+    }
     create_digits(id_prefix)
     {
         let html = ""
@@ -124,5 +131,63 @@ class GameUI
     refresh_button(button)
     {
         main_ui.get_id("game-button").src = button
+    }
+
+    add_combo_message(a_for_what, a_score = 0, a_combo = 0)
+    {
+        this.combo_messages.push({for_what: a_for_what, score: a_score, combo: a_combo})
+        if(this.displaying_combo_messages == false)
+            this.show_combo_message(0)
+    }
+
+    show_combo_message(index)
+    {
+        const message = this.combo_messages[index]
+        this.displaying_combo_messages = true
+        let html = main_ui.to_img_tag(get_src("combo", message.for_what), "for-what")
+        if(message.combo > 0)
+        {
+            html += main_ui.str_number_to_div_tag("*" + message.combo)
+        }
+        if(message.score > 0)
+        {
+            html += "<br>"
+            html += main_ui.str_number_to_div_tag("+" + message.score + " ")
+        }
+        const display = main_ui.get_id("combo-display")
+        display.innerHTML = html
+        this.show_combo_display_value()
+        let self = this
+        this.combo_display_timeout = setTimeout(function(){
+            self.combo_messages.shift()
+            if(self.combo_messages.length == 0)
+            {
+                self.hide_combo_display_value()
+                self.displaying_combo_messages = false
+            }
+            else
+            {
+                self.show_combo_message(0)
+            }
+        }, data.delays.combo_display)
+    }
+
+    hide_combo_display_value()
+    {
+        const display = main_ui.get_id("combo-display")
+        display.style.transition = data.delays.combo_display_fade_out + "ms"
+        display.classList.add("hidden")
+    }
+
+    show_combo_display_value()
+    {
+        const display = main_ui.get_id("combo-display")
+        display.style.transition = "0ms"
+        display.classList.remove("hidden")
+    }
+
+    clear_combo_display_value()
+    {
+        main_ui.get_id("combo-display").innerHTML = ""
     }
 }

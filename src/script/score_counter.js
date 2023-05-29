@@ -6,16 +6,17 @@
 
 class ScoreCounter
 {
-    constructor()
+    constructor(ui)
     {
-        this.prev_lines = 0
-        this.recursive_gravity_multiplier = false
+        this.cur_lines_number = 0
+        this.cur_compressing_score = 0
+        this.ui = ui
     }
 
     reset()
     {
-        this.prev_lines = 0
-        this.recursive_gravity_multiplier = false
+        this.cur_lines_number = 0
+        this.compressing = 0
     }
 
     count_score_for_making_lines(lines)
@@ -57,15 +58,15 @@ class ScoreCounter
     count_score_for_lines(lines)
     {
         let score = 0
-        if(lines.length > 0)
-        {
-            score = this.count_score_for_making_lines(lines.length + this.prev_lines)
-            if(this.recursive_gravity_multiplier == true)
-                score *= data.score.recursive_gravity_multiplier
-            score -= this.count_score_for_making_lines(this.prev_lines)
-            score += this.count_score_for_multipliers(lines)
-            this.prev_lines = lines.length
-        }
+        let all_lines_number = lines.length + this.cur_lines_number
+        score = this.count_score_for_making_lines(all_lines_number)
+        this.ui.add_combo_message("line", score, all_lines_number)
+        score -= this.count_score_for_making_lines(this.cur_lines_number)
+        let multipliers_score = this.count_score_for_multipliers(lines)
+        score += multipliers_score
+        if(multipliers_score > 0)
+            this.ui.add_combo_message("multipliers", multipliers_score)
+        this.cur_lines_number = lines.length
         return score
     }
 
@@ -81,16 +82,30 @@ class ScoreCounter
 
     count_score_for_compress()
     {
-        return data.score.compressing
+        let score = data.score.compressing
+        this.cur_compressing_score += score
+        this.ui.add_combo_message("compressing", this.cur_compressing_score)
+        return score
     }
 
     count_score_for_burning(quantity)
     {
-        return quantity * data.score.burning
+        let score = quantity * data.score.burning
+        this.ui.add_combo_message("burning", score)
+        return score
     }
 
     count_score_for_melting(quantity)
     {
-        return quantity * data.score.melting
+        let score = quantity * data.score.melting
+        this.ui.add_combo_message("melting", score)
+        return score
+    }
+
+    count_score_for_recursive_gravity()
+    {
+        let score = data.score.recursive_gravity
+        this.ui.add_combo_message("recursive_gravity", score)
+        return score
     }
 }

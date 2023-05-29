@@ -23,11 +23,16 @@ body
 
 #footer
 {
-    position: absolute;
-    z-index: 1;
+    margin-inline: auto;
     height: 2rem;
-    bottom: 0;
-    right: calc(((100% - 100rem) / 2));
+    width: 100rem;
+    background-color: var(--WINDOW-BG-COLOR);
+}
+
+#footer-img
+{
+    float: right;
+    height: 90%;
 }
 
 #screen
@@ -43,61 +48,25 @@ body
     background-color: var(--SCREEN-BG-COLOR);
 }
 
-#screen.dark
-{
-    cursor: url("../img/main/cursor_high_contrast.png") 15 15, auto;
-    --WINDOW-BG-COLOR: #f0f0f0;
-    --SCREEN-BG-COLOR: #d0d0d0;
-    --BORDER-COLOR: #000000;
-    --BORDER: 0.6rem solid var(--BORDER-COLOR);
-    --TABLE-BG-COLOR: #fcfcfc;
-}
-
-#screen.dark img:not(:is(.pixel, #cross))
-{
-    filter: brightness(0);
-}
-
-#screen.dark .pixel.modified.transparent
-{
-    filter: brightness(.4);
-}
-
-#screen.dark :is(#edit, #board, #preview) .pixel:not(:is(.empty, .transparent, .modified))
-{
-    border: 0.8rem solid #000000;
-    background-color: #000000;
-    box-shadow: 0 0 1rem #000000;
-    position: relative;
-}
-
-#screen.dark .pixel:is(.transparent, .modified)
-{
-    border: 0.4rem solid black;
-    border-radius: 0.8rem; 
-    background-color: white;
-    opacity: 1;
-}
-
 .display:is(.game, .windows)
 {
-    margin-inline: auto;
     text-align: center;
     background-color: var(--WINDOW-BG-COLOR);
-    height: calc(100vh - 16rem);
+    height: 100%;
+    width: 100%;
 }
 
-.display.game
+#displays
 {
+    margin-inline: auto;
+    position: relative;
     width: 100rem;
+    height: calc(100vh - 18rem);
 }
 
 .display.windows
 {
-    position: fixed;
-    bottom: 0;
-    width: 100rem;
-    left: calc((100% - 100rem) / 2);
+    position: absolute;
     z-index: 1;
 }
 
@@ -109,7 +78,6 @@ body
 .window
 {
     margin-inline: auto;
-    box-sizing: border-box;
 }
 
 .window.game
@@ -164,31 +132,19 @@ body
         transform: scale(1.05);
         opacity: 70%;
     }
+
     .button:hover:active
     {
         transform: scale(0.95);
         opacity: 50%;
     }
-    #screen:not(.dark).window.editor #edit .pixel.empty:hover
+    
+    .window.editor #edit .pixel.empty:hover
     {
         background-color: #00ffff;
         border-color: #00e0e0;
         border-width: 0.8rem;
         opacity: 20%;
-    }
-
-    #screen.dark .window.editor #edit .pixel.empty:hover
-    {
-        border: 0.4rem solid black;
-        border-radius: 0.8rem; 
-        background-color: white;
-    }
-
-    #screen.dark .window.editor #edit .pixel:not(.empty):hover
-    {
-        border: 0.8rem solid #303030;
-    background-color: #303030;
-    box-shadow: 0 0 1rem #303030;
     }
 }
 
@@ -438,7 +394,7 @@ body
 
 .window.settings .property
 {
-    height: 5rem;
+    height: 6rem;
     width: 50%;
     margin-inline: auto;
 }

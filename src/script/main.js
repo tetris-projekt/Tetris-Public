@@ -62,7 +62,6 @@ function setup()
     preload_content()
     main_ui = new MainUI()
     main_ui.setup()
-    main_ui.refresh_theme(Settings.get_properties()["high_contrast"])
     if(storage_get("enabled") == true)
         show_menu()
     else
@@ -250,7 +249,7 @@ function resume_game()
 function restart_game()
 {
     game.end()
-    save_score()
+    stop_game_tick()
     play_game()
 }
 
@@ -313,7 +312,7 @@ function show_really_quit()
 function quit()
 {
     game.end()
-    save_score()
+    stop_game_tick()
     show_menu()
     try_to_play_sound("end")
 }
@@ -341,20 +340,10 @@ function create_new_score_board()
     return new ScoreBoard(ui)
 }
 
-function save_score()
+function save_score(score, lines, game_mode, speed)
 {
     score_board = create_new_score_board()
-    let score = game.score
-    let lines = game.lines
-    let game_mode = game.data.game_mode
-    let speed = game.data.speed
     score_board.add(score, lines, game_mode, speed)
-}
-
-function game_end()
-{
-    stop_game_tick()
-    save_score(this.score, this.lines)
 }
 
 function show_game_over()

@@ -15,10 +15,14 @@ const windows =
     `
         <div id="screen">
             <div id="baner"><img src="${get_src("main", "baner")}" id="baner-img"></img></div>
-            <div class="windows display"></div>
-            <div class="game display"></div>
-            <img src="${get_src("main", "footer")}" id="footer"></img>
-        </div>
+            <div id="displays">
+                <div class="windows display"></div>
+                <div class="game display"></div>
+            </div>
+            <div id="footer">
+                <img src="${get_src("main", "footer")}" id="footer-img"></img>
+            </div>    
+            </div>
     `,
     "info": 
     `
@@ -96,7 +100,9 @@ const windows =
     "game":
     `
         <div class="window game">
-            <div id="board"></div>
+            <div id="board">
+                <div id="combo-display"></div>
+            </div>
             <div id="preview">
                 <div id="next">
                     <img src="${get_src("game", "next")}" id="next-img"></img>
@@ -236,7 +242,7 @@ const windows =
             ${line("long")}
             <br>
             ${line("short")}
-            <img src="${get_src("pause", "restart")}" id="restart" class="button" onclick="restart_game()"></img>
+            <img src="${get_src("pause", "restart")}" id="restart" class="button" onclick="play_game()"></img>
             ${line("short")}
             <img src="${get_src("how_to_play", "back")}" id="back" class="button" onclick="go_back()"></img>
             ${line("short")}

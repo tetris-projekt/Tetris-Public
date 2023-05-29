@@ -70,13 +70,15 @@ const data =
         soft_drop: get_config_number("soft_drop_delay", 40, 60, 50),
         tick_step: get_config_number("tick_delay_step", 1, 20, 5),
         min_tick: get_config_number("min_tick_delay", 100, 300, 150),
+        combo_display: get_config_number("combo_display_delay", 100, 2000, 800),
+        combo_display_fade_out: get_config_number("combo_display_fade_out_delay", 100, 2000, 200),
     },
 
     score:
     {
         first_line: get_config_number("score_for_first_line", 0, 1000, 250),
         line_combo_multiplier: get_config_number("line_combo_multiplier", 2, 10, 2),
-        recursive_gravity_multiplier: get_config_number("recursive_gravity_multiplier", 2, 10, 2),
+        recursive_gravity: get_config_number("score_for_recursive_gravity", 0, 1000, 500),
         soft_drop: get_config_number("score_for_soft_drop", 0, 1000, 1),
         hard_drop: get_config_number("score_for_hard_drop", 0, 1000, 2),
         compressing: get_config_number("score_for_compressing", 0, 1000, 50),
@@ -86,7 +88,7 @@ const data =
 
     ScorePropertyNames: ["score", "lines", "game_mode", "speed", "date"],
 
-    SettingsPropertyNames: ["sounds", "music", "ghost", "auto_pause", "high_contrast"],
+    SettingsPropertyNames: ["sounds", "music", "ghost", "auto_pause"],
     
     SettingsPropertyNamesToImgs:
     {
@@ -94,7 +96,6 @@ const data =
         "music": get_src("settings", "music"),
         "ghost": get_src("settings", "ghost"),
         "auto_pause": get_src("settings", "auto_pause"),
-        "high_contrast": get_src("settings", "high_contrast"),
     },
 
     default_settings_properties:
@@ -103,7 +104,6 @@ const data =
         "music": get_config_bool("music", true),
         "ghost": get_config_bool("ghost", true),
         "auto_pause": get_config_bool("auto_pause", true),
-        "high_contrast": get_config_bool("high_contrast", false),
     },
     
     BrickTypeToImgs:

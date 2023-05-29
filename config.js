@@ -7,24 +7,23 @@ const config =
     "start_delay_hard": 600, // (500-700)
     "tick_delay_step": 3, //(1-20)
     "min_tick_delay": 200, // (100-300)
+    "combo_display_delay": 800, // (100-2000)
+    "combo_display_fade_out_delay": 200, // (100-2000)
 
     /* scores (0-1000) */
     "score_for_first_line": 250,
     "score_for_soft_drop": 1,
     "score_for_hard_drop": 2,
+    "score_for_recursive_gravity": 500,
     
     /* score for line are multipled by multiplier for each line (2-10) */
     "line_combo_multiplier": 2,
-
-    /* score for lines are multipled by multiplier when you use recursive gravity (2-10) */
-    "recursive_gravity_multiplier": 2,
 
     /* default settings */
     "sounds": true,
     "music": true,
     "ghost": true,
     "auto_pause": true,
-    "high_contrast": false,
 
     /* default editor properties */
     "move_center": false,
