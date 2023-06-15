@@ -118,6 +118,24 @@ body
     width: 60%;
 }
 
+.button.selected
+{
+    animation: select 0.16s;
+    outline: solid #5cf8ff;
+}
+
+@keyframes select
+{
+    0%
+    {
+        outline-width: 0.6rem;
+    }
+    100%
+    {
+        outline-width: 0.4rem;
+    }
+}
+
 /*------------------MAIN----------------*/
 
 
@@ -158,23 +176,6 @@ body
 
 
 
-/*-----------------INFO-----------------*/
-
-.window.info #info
-{
-    margin-top: 1rem;
-    height: 3.5rem;
-}
-
-.window.info #ok
-{
-    margin-top: 3rem;
-    height: 5rem;
-}
-
-/*-----------------INFO-----------------*/
-
-
 
 /*-----------------MENU-----------------*/
 
@@ -196,6 +197,11 @@ body
 .window.menu .selector.speed
 {
     aspect-ratio: 5.1 / 1;
+}
+
+.window.menu .display:is(.game-mode, .speed)
+{
+    display: inline-block;
 }
 
 .selector
@@ -234,8 +240,8 @@ body
 
 .window.editor #editor-properties
 {
-    margin-block: 2rem;
-    width: 46%;
+    margin-block: 3rem;
+    width: 49%;
     float: left;
 }
 
@@ -253,10 +259,10 @@ body
 
 .window.editor #editor-properties .property
 {
-    height: 5em;
-    width: 30rem;
+    height: 4em;
+    width: 36rem;
     float: right;
-    margin-block: 0.5rem;
+    margin-block: 1rem;
 }
 
 .window.editor #brick-editor .property.move-center
@@ -271,7 +277,7 @@ body
     height: 5rem;
 }
 
-.window.editor #brick-index
+.window.editor .brick.display
 {
     display: inline-block;
 }
@@ -349,7 +355,7 @@ body
     height: 45rem;
 }
 
-.window.how-to-play .selector.page img
+.window.how-to-play .selector.page-number img
 {
     height: 5rem;
 }
@@ -359,12 +365,12 @@ body
     display: inline-block;
 }
 
-.window.how-to-play .selector.page
+.window.how-to-play .selector.page-number
 {
     aspect-ratio: 4 / 1;
 }
 
-.window.how-to-play .selector.page .value
+.window.how-to-play .selector.page-number .value
 {
     float: left;
 }
@@ -394,7 +400,7 @@ body
 
 .window.settings .property
 {
-    height: 6rem;
+    height: 5rem;
     width: 50%;
     margin-inline: auto;
 }

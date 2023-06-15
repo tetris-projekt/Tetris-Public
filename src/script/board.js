@@ -15,9 +15,7 @@ class Board
         {
             let row = new Array()
             for(let x = 0; x < width; ++x)
-            {
                 row.push(Pixel.create(x, y))
-            }
             this.board.push(row)
         }
     }
@@ -162,8 +160,8 @@ class Board
         {
             let x = brick.get_pixel_x(i)
             let y = brick.get_pixel_y(i)
-            if(!this.coords_exist(x, y) || (this.coords_exist(x, y) && !this.get_pixel(x, y).is_empty()))
-                return false    
+            if(!this.coords_exist(x, y) || !this.get_pixel(x, y).is_empty())
+                return false
         }
         return true
     }

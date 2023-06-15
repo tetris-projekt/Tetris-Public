@@ -4,24 +4,6 @@
 
 /*----------------------------------------------------------------------------------------------------*/
 
-const BrickType = 
-{
-    custom: 0,
-    p1: 1,
-    p2: 2,
-    p3: 3,
-    p4: 4,
-    p5: 5,
-}
-
-const ModifierType = 
-{
-    ice: 1,
-    fire: 2,
-    steel: 3,
-    glue: 4,
-}
-
 const BurnableModifiers = 
 [
     null,
@@ -45,13 +27,13 @@ class Brick
         this.y = 0
     }
 
-    static create(x, y, color, vectors_list)
+    static create(vectors_list, color, x, y)
     {
         let brick = new Brick()
         brick.x = x
         brick.y = y
-        brick.rotate = true
-        brick.move = true
+        brick.can_rotate = true
+        brick.can_move = true
         brick.modifier = null
         for(let i = 0; i < vectors_list.length - 1; ++i)
         {
@@ -68,8 +50,8 @@ class Brick
         Brick.copy_vectors_list(copy.pixels, brick.pixels)
         copy.x = brick.x
         copy.y = brick.y
-        copy.rotate = brick.rotate
-        copy.move = brick.move
+        copy.can_rotate = brick.can_rotate
+        copy.can_move = brick.can_move
         copy.modifier = brick.modifier
         copy.special_rotate = brick.special_rotate
         return copy
@@ -81,35 +63,15 @@ class Brick
             target[i] = Pixel.copy(vectors_list[i])
     }
 
-    rotate_right()
+    rotate()
     {
         for(let i = 0; i < this.pixels.length; ++i)
         {
             let pixel = this.pixels[i]
-            let x = pixel.y * -1
-            pixel.y = pixel.x
-            pixel.x = x
-        }
-        if(this.special_rotate == true)
-        {
-            for(let i = 0; i < this.pixels.length; ++i)
-                ++this.pixels[i].x
-        }
-    }
-
-    rotate_left()
-    {
-        for(let i = 0; i < this.pixels.length; ++i)
-        {
-            let pixel = this.pixels[i]
-            let y = pixel.x * -1
-            pixel.x = pixel.y
-            pixel.y = y
-        }
-        if(this.special_rotate == true)
-        {
-            for(let i = 0; i < this.pixels.length; ++i)
-                ++this.pixels[i].y
+            swap(pixel, "x", "y")
+            pixel.x *= -1
+            if(this.special_rotate == true)
+                ++pixel.x
         }
     }
 
@@ -137,7 +99,7 @@ class Brick
 
     set_modifier(modifier)
     {
-        this.rotate = !(modifier == ModifierType.ice)
+        this.can_rotate = !(modifier == ModifierType.ice)
         this.modifier = modifier
         for(let i = 0; i < this.pixels.length; ++i)
         {

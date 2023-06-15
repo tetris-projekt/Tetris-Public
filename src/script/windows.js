@@ -9,6 +9,25 @@ function line(type)
     return `<img src="${get_src("main", "line")}" class="line ${type}"></img>`
 }
 
+function button(src, onclick, id = "", cls = "")
+{
+    return `<img src="${src}" onclick="${onclick}" ${id != "" ? ("id=" + id) : ""} class="button ${cls}"></img>`
+}
+
+function touch_button(src, onpointerdown, cls)
+{
+    return `<img src="${src}" onpointerdown="${onpointerdown}" class="button ${cls}"></img>`
+}
+
+function selector(cls, onclick)
+{
+    return `<div class="${cls} selector">
+    ${button(get_src("main", "left_arrow"), `${onclick}(-1)`, "", `button left ${cls}`)}
+    <div class="${cls} display"></div>
+    ${button(get_src("main", "right_arrow"), `${onclick}(1)`, "", `button right ${cls}`)}
+    </div>`
+}
+
 const windows = 
 {
     "main_windows":
@@ -22,54 +41,34 @@ const windows =
             <div id="footer">
                 <img src="${get_src("main", "footer")}" id="footer-img"></img>
             </div>    
-            </div>
-    `,
-    "info": 
-    `
-        <div class="window info">
-            <br>
-            ${line("long")}
-            <img src="${get_src("info", "info")}" id="info"></img>
-            <br>
-            <img src="${get_src("info", "ok")}" id="ok" class="button" onclick="show_menu(); sign_local_storage()"></img>
-            ${line("long")}
         </div>
     `,
     "menu":
     `
         <div class="window menu">
             ${line("long")}
-            <img src="${get_src("menu", "play")}" id="play" class="button" onclick="play_game()"></img>
+            ${button(get_src("menu", "play"), "control.play()", "play")}
             ${line("long")}
             ${line("short")}
             <img src="${get_src("game_mode", "game_mode")}" id="game-mode"></img>
-            <div class="game-mode selector">
-                <img src="${get_src("main", "left_arrow")}" class="button left game-mode" onclick="change_game_mode(-1);"></img>
-                <img class="game-mode display"></img>
-                <img src="${get_src("main", "right_arrow")}" class="button right game-mode" onclick="change_game_mode(1);"></img>
-            </div>
-            ${line("short")}    
-            <img src="${get_src("brick_editor", "brick_editor")}" class="button editor" onclick="show_editor()"></img>
+            ${selector("game-mode", "menu.change_game_mode")}
+            ${line("short")}
+            ${button(get_src("brick_editor", "brick_editor"), "control.brick_editor()", "", "editor")}
             ${line("short")}
             <img src="${get_src("speed", "speed")}" id="speed"></img>
-            <div class="speed selector">
-                <img src="${get_src("main", "left_arrow")}" class="button left speed" onclick="change_speed(-1)"></img>
-                <img class="speed display"></img>
-                <img src="${get_src("main", "right_arrow")}" class="button right speed" onclick="change_speed(1)"></img>
-            </div>
+            ${selector("speed", "menu.change_speed")}
             ${line("short")}
-            <img src="${get_src("best_scores", "best_scores")}" id="best-scores" class="button" onclick="show_best_scores()"></img>
+            ${button(get_src("best_scores", "best_scores"), "control.best_scores()", "best-scores")}
             ${line("short")}
-            <img src="${get_src("settings", "settings")}" id="settings" class="button" onclick="show_settings()"></img>
+            ${button(get_src("settings", "settings"), "control.settings()", "settings")}
             ${line("short")}
-            <img src="${get_src("how_to_play", "how_to_play")}" id="how-to-play" class="button" onclick="show_how_to_play()"></img>
+            ${button(get_src("how_to_play", "how_to_play"), "control.how_to_play()", "how-to-play")}
             ${line("short")}
         </div>
     `,
     "editor":
     `
         <div class="window editor">
-            <br>
             ${line("long")}
             <img src="${get_src("brick_editor", "brick_editor")}" id="editor"></img>
             ${line("long")}
@@ -77,23 +76,19 @@ const windows =
             <div id="brick-editor" class="edit-section">
                 <div class="property move-center">
                     <img src="${get_src("brick_editor", "move_center")}" class="property-name"></img>
-                    <img id="move-center" class="button toggle move-center" onclick="editor.toggle_move_center()"></img>
+                    ${button("", "editor.toggle_move_center()", "move-center", "toggle move-center")}
                 </div>
                 <div id="edit" class="edit-board"><img src="${get_src("brick_editor", "cross")}" id="cross"></img></div>
                 <div id="brick-selector-box">
-                    <div class="brick selector">
-                    <img src="${get_src("main", "left_arrow")}" class="button left brick" onclick="editor.change_brick_index(-1)"></img>
-                    <div id="brick-index"></div>
-                    <img src="${get_src("main", "right_arrow")}" class="button right brick" onclick="editor.change_brick_index(1)"></img>
-                    </div>
+                ${selector("brick", "editor.change_brick_index")}
                 </div>
                 <div id="buttons-box">
-                <img src="${get_src("brick_editor", "delete")}" id="delete" class="button left delete" onclick="editor.remove_brick()"></img>
-                <img src="${get_src("brick_editor", "add")}" id="add" class="button right add" onclick="editor.add_brick()"></img>
+                ${button(get_src("brick_editor", "delete"), "editor.remove_brick()", "delete", "left delete")}
+                ${button(get_src("brick_editor", "add"), "editor.add_brick()", "add", "right add")}
                 </div>
             </div>
             ${line("short")}
-            <img src="${get_src("settings", "save")}" id="save" class="button" onclick="save_editor()"></img>
+            ${button(get_src("settings", "save"), "control.save_editor()", "save")}
             ${line("short")}
         </div>
     `,
@@ -101,7 +96,7 @@ const windows =
     `
         <div class="window game">
             <div id="board">
-                <div id="combo-display"></div>
+                <div id="bonus-display"></div>
             </div>
             <div id="preview">
                 <div id="next">
@@ -128,14 +123,14 @@ const windows =
                 <br>
                 <img id="speed-img-value"></img>
                 ${line("short")}
-                <img id="game-button" class="button" onclick="game_button_click()"></img>
+                <img id="game-button" class="button" onclick="control.game_button_click()"></img>
                 ${line("short")}
             </div>
             <div id="controls">
-                <img src="${get_src("controls", "move_left")}" class="button control move-left" onpointerdown="try_to_move_left(); reset_move_left()"></img>
-                <img src="${get_src("controls", "rotate")}" class="button control rotate" onpointerdown="try_to_rotate(); reset_rotate()"></img>
-                <img src="${get_src("controls", "move_right")}" class="button control move-right" onpointerdown="try_to_move_right(); reset_move_right()"></img>
-                <img src="${get_src("controls", "hard_drop")}" class="button control hard-drop" onpointerdown="try_to_hard_drop(); reset_hard_drop()"></img>
+                ${touch_button(get_src("controls", "move_left"), "control.move_left()", "control move-left")}
+                ${touch_button(get_src("controls", "rotate"), "control.rotate()", "control rotate")}
+                ${touch_button(get_src("controls", "move_right"), "control.move_right()", "control move-right")}
+                ${touch_button(get_src("controls", "hard_drop"), "control.hard_drop()", "control hard-drop")}
             </div>
         </div>
     `,
@@ -148,15 +143,15 @@ const windows =
         ${line("long")}
         <br>
         ${line("short")}
-        <img src="${get_src("pause", "resume")}" class="button" onclick="resume_game()"></img>
+        ${button(get_src("pause", "resume"), "control.resume()")}
         ${line("short")}
-        <img src="${get_src("pause", "restart")}" class="button" onclick="show_really_restart()"></img>
+        ${button(get_src("pause", "restart"), "control.really_restart()")}
         ${line("short")}
-        <img src="${get_src("how_to_play", "how_to_play")}" class="button" onclick="show_how_to_play()"></img>
+        ${button(get_src("how_to_play", "how_to_play"), "control.how_to_play()")}
         ${line("short")}
-        <img src="${get_src("settings", "settings")}" class="button" onclick="show_settings()"></img>
+        ${button(get_src("settings", "settings"), "control.settings()")}
         ${line("short")}
-        <img src="${get_src("game", "menu")}" class="button" onclick="show_really_quit()"></img>
+        ${button(get_src("game", "menu"), "control.really_quit()")}
         ${line("short")}
     </div>
     `,
@@ -168,13 +163,9 @@ const windows =
             <img src="${get_src("how_to_play", "how_to_play")}" id="how-to-play"></img>
         ${line("long")}
         <img class="page display"></img>
-        <div class="page selector">
-            <img src="${get_src("main", "left_arrow")}" class="button left page" onclick="turn_page(-1)"></img>
-            <div class="page-number display"></div>
-            <img src="${get_src("main", "right_arrow")}" class="button right page" onclick="turn_page(1)"></img>
-        </div>
+        ${selector("page-number", "how_to_play.turn_page")}
         ${line("short")}
-        <img src="${get_src("how_to_play", "back")}" class="button" id="back" onclick="go_back()"></img>
+        ${button(get_src("how_to_play", "back"), "control.go_back()", "back")}
         ${line("short")}
     </div>
     `,
@@ -189,7 +180,7 @@ const windows =
             ${line("short")}
             <div id="settings-properties"></div>
             ${line("short")}
-            <img src="${get_src("settings", "save")}" id="save" class="button" onclick="save_settings()"></img>
+            ${button(get_src("settings", "save"), "control.save_settings()", "save")}
             ${line("short")}
         </div>
     `,
@@ -200,8 +191,8 @@ const windows =
             ${line("long")}
             <img src="${get_src("quit", "really_quit")}" id="ask"></img>
             <div id="buttons">
-                <img src="${get_src("quit", "cancel")}" id="cancel" class="button" onclick="go_back()"></img>
-                <img src="${get_src("quit", "quit")}" id="yes" class="button" onclick="quit()"></img>
+                ${button(get_src("quit", "cancel"), "control.go_back()", "cancel")}
+                ${button(get_src("quit", "quit"), "control.quit()", "yes")}
             </div>
             ${line("long")}
         </div>
@@ -213,8 +204,8 @@ const windows =
             ${line("long")}
             <img src="${get_src("restart", "really_restart")}" id="ask"></img>
             <div id="buttons">
-                <img src="${get_src("restart", "cancel")}" id="cancel" class="button" onclick="go_back()"></img>
-                <img src="${get_src("restart", "restart")}" id="yes" class="button" onclick="restart_game()"></img>
+                ${button(get_src("restart", "cancel"), "control.go_back()", "cancel")}
+                ${button(get_src("restart", "restart"), "control.restart()", "yes")}
             </div>
             ${line("long")}
         </div>
@@ -228,7 +219,7 @@ const windows =
             <div id="score-board"></div>
             ${line("long")}
             ${line("short")}
-            <img src="${get_src("how_to_play", "back")}" id="back" class="button" onclick="go_back()"></img>
+            ${button(get_src("how_to_play", "back"), "control.go_back()", "back")}
             ${line("short")}
             <div id="clear-box"></div>
         </div>
@@ -242,13 +233,12 @@ const windows =
             ${line("long")}
             <br>
             ${line("short")}
-            <img src="${get_src("pause", "restart")}" id="restart" class="button" onclick="play_game()"></img>
+            ${button(get_src("pause", "restart"), "control.play()", "restart")}
             ${line("short")}
-            <img src="${get_src("how_to_play", "back")}" id="back" class="button" onclick="go_back()"></img>
+            ${button(get_src("how_to_play", "back"), "control.go_back()", "back")}
             ${line("short")}
-            <img src="${get_src("game", "menu")}" id="menu" class="button" onclick="show_menu(); try_to_play_sound('open')"></img>
+            ${button(get_src("game", "menu"), "control.menu(); try_to_play_sound('open')", "menu")}
             ${line("short")}
-
         </div>
     `,
 }

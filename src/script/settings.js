@@ -10,6 +10,9 @@ class Settings
     {
         this.ui = ui
         this.properties = Settings.get_properties()
+        control.open_window("windows", "settings")
+        this.ui.create_properties()
+        this.ui.refresh_properties(this.properties)
     }
 
     static get_properties()
@@ -38,6 +41,11 @@ class Settings
         return properties
     }
 
+    static get_property(property_name)
+    {
+        return Settings.get_properties()[property_name]
+    }
+
     save()
     {
         storage_set("settings", this.properties)
@@ -49,14 +57,7 @@ class Settings
             this.properties[property_name] = false
         else
             this.properties[property_name] = true
-        this.ui.refresh_checkbox(property_name, this.properties[property_name])
+        refresh_checkbox(property_name, this.properties[property_name])
         try_to_play_sound("toggle")
-    }
-
-    edit()
-    {
-        open_window("windows", "settings")
-        this.ui.create_properties()
-        this.ui.refresh_checkboxes(this.properties)
     }
 }

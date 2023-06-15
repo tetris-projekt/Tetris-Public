@@ -9,10 +9,14 @@ class ScoreBoard
     constructor(ui)
     {
         this.ui = ui
-        this.read()
+        this.score_board = ScoreBoard.read_scoreboard()
+        if(this.score_board.length > 0)
+            this.ui.show_score_board(this.score_board)
+        else
+            this.ui.show_empty()
     }
 
-    check_property(property_name, value)
+    static check_property(property_name, value)
     {
         if(isIn(property_name, ["score", "lines"]))
             return (typeof(value) == "number" && value >= 0)
@@ -36,35 +40,36 @@ class ScoreBoard
         }
     }
 
-    check_score(score)
+    static check_score(score)
     {
         if(typeof(score) != "object" || score == null)
             return false
         for(let j = 0; j < data.ScorePropertyNames.length; ++j)
         {
             let property_name = data.ScorePropertyNames[j]
-            if(this.check_property(property_name, score[property_name]) == false)
+            if(ScoreBoard.check_property(property_name, score[property_name]) == false)
                 return false
         }
         return true
     }
 
-    read()
+    static read_scoreboard()
     {
-        this.score_board = new Array()
+        score_board = new Array()
         let score_board_storage = storage_get("score_board")
         if(typeof(score_board_storage) == "object" && score_board_storage != null && score_board_storage.length > 0)
         {
             for(let i = 0; i < score_board_storage.length; ++i)
             {
                 let score = score_board_storage[i]
-                if(this.check_score(score) == true)
-                    this.score_board.push(score)
+                if(ScoreBoard.check_score(score) == true)
+                    score_board.push(score)
             }
-        } 
+        }
+        return score_board
     }
 
-    get_cur_date()
+    static get_cur_date()
     {
         let now = new Date()
         let day = setw(now.getDate(), 2)
@@ -74,28 +79,27 @@ class ScoreBoard
         return date
     }
 
-    find_key(score)
+    static find_key(score_board, score)
     {
-        if(this.score_board.length == 0)
-            return 0
-        for(let i = 0; i < this.score_board.length; ++i)
+        for(let i = 0; i < score_board.length; ++i)
         {
-            if(score >= this.score_board[i]["score"])
+            if(score >= score_board[i]["score"])
                 return i
         }
-        return this.score_board.length
+        return score_board.length
     }
 
-    make_gap(index)
+    static make_gap(score_board, index)
     {
-        if(index == this.score_board.length)
+        if(index == score_board.length)
             return
-        for(let i = this.score_board.length - 1; i >= index; --i)
-            this.score_board[i + 1] = this.score_board[i]
+        for(let i = score_board.length - 1; i >= index; --i)
+            score_board[i + 1] = score_board[i]
     }
 
-    add(score, lines, game_mode, speed)
+    static add(score, lines, game_mode, speed)
     {
+        score_board = ScoreBoard.read_scoreboard()
         let new_score = 
         {
             "score": score,
@@ -104,32 +108,24 @@ class ScoreBoard
             "speed": speed,
             "date": this.get_cur_date(),
         }
-        let index = this.find_key(score)
-        this.make_gap(index)
-        this.score_board[index] = new_score
-        if(this.score_board.length > data.max_score_board_length)
-            this.score_board.pop()
-        this.save()
-    }
-
-    show()
-    {
-        if(this.score_board.length > 0)
-            this.ui.show_score_board(this.score_board)
-        else
-            this.ui.show_empty()
+        let index = ScoreBoard.find_key(score_board, score)
+        ScoreBoard.make_gap(score_board, index)
+        score_board[index] = new_score
+        if(score_board.length > data.max_score_board_length)
+            score_board.pop()
+        ScoreBoard.save(score_board)
     }
 
     clear()
     {
         this.score_board = new Array()
-        this.save()       
-        this.show()
+        ScoreBoard.save(this.score_board)       
+        this.ui.show_empty()
         try_to_play_sound("clear_scores")
     }
 
-    save()
+    static save(score_board)
     {
-        storage_set("score_board", this.score_board)
+        storage_set("score_board", score_board)
     }
 }

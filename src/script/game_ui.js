@@ -9,16 +9,29 @@ class GameUI
 
     constructor()
     {
-        this.combo_display_timeout = 0
-        this.displaying_combo_messages = false
-        this.combo_messages = new Array()
+        this.values =
+        {
+            score: 0,
+            lines: 0,
+        }
+        this.screen_values =
+        {
+            score: 0,
+            lines: 0,
+        }
+        this.intervals = 
+        {
+            score: 0,
+            lines: 0,
+        }
     }
+
     create_digits(id_prefix)
     {
         let html = ""
         for(let i = 0; i < data.digits_in_values; ++i)
-            html += `<img id="${id_prefix}_d${i}" class="digit"></img>\n`
-        main_ui.get_first_from_class(`value ${id_prefix}`).innerHTML = html
+            html += `<img id="${id_prefix}${i}" class="digit" draggable="false"></img>\n`
+        get_first_from_class(`value ${id_prefix}`).innerHTML = html
     }
 
     create_board(id_prefix, reverse)
@@ -40,23 +53,23 @@ class GameUI
                     html += `<div id="${id_prefix}${y};${x}" class="pixel"></div>\n`
             }
         }
-        main_ui.get_id(id_prefix).innerHTML += html
+        get_id(id_prefix).innerHTML += html
     }
 
     refresh_controls(reverse)
     {
         if(reverse == true)
-            main_ui.get_id("controls").classList.add("reverse")
+            get_id("controls").classList.add("reverse")
     }
 
     refresh_speed(speed)
     {
-        main_ui.get_id("speed-img-value").src = data.GameSpeedToImgs[speed]
+        get_id("speed-img-value").src = data.GameSpeedToImgs[speed]
     }
 
     refresh_game_mode(game_mode)
     {
-        main_ui.get_id("game-mode-img-value").src = data.GameModeToImgs[game_mode]
+        get_id("game-mode-img-value").src = data.GameModeToImgs[game_mode]
     }  
 
     refresh_board(board)
@@ -75,7 +88,7 @@ class GameUI
         {
             for(let x = 0; x < board.width; ++x)
             {
-                const screen_pixel = main_ui.get_id(`${id_prefix + y};${x}`)
+                const screen_pixel = get_id(`${id_prefix + y};${x}`)
                 let board_pixel = board.get_pixel(x, y)
                 screen_pixel.className = "pixel"
                 if(board_pixel.modifier != null)
@@ -103,91 +116,87 @@ class GameUI
         return score
     }
 
-    refresh_any_value(id_prefix, value)
+    set_screen_value(id_prefix, value)
     {
-        let digits = main_ui.slice_number(value)
+        let digits = slice_number(value)
         let number_of_digits = digits.length
         if(number_of_digits > data.digits_in_values)
         {
-            this.refresh_any_value(id_prefix, this.get_max_value())
+            this.set_screen_value(id_prefix, this.get_max_value())
         }
         else
         {
             for(let i = 0; i < number_of_digits; ++i)
-                main_ui.get_id(id_prefix + i).src = get_src("digits", digits[i])
+                get_id(id_prefix + i).src = get_src("digits", digits[i])
         }
     }
 
-    refresh_score(score)
+    calculate_step(difference)
     {
-        this.refresh_any_value("score_d", score)
+        let separator = 10
+        while(difference > separator)
+            separator *= 10
+        return separator / 10
     }
-    
-    refresh_lines(lines)
+
+    smooth_refresh(value_type)
     {
-        this.refresh_any_value("lines_d", lines)
+        clearInterval(this.intervals[value_type])
+        let self = this
+        this.intervals[value_type] = setInterval( function() {
+            if(self.screen_values[value_type] < self.values[value_type])
+            {
+                self.screen_values[value_type] += self.calculate_step(self.values[value_type] - self.screen_values[value_type])
+                self.set_screen_value(`${value_type}`, self.screen_values[value_type])
+            }
+            else
+            {
+                self.set_screen_value(`${value_type}`, self.screen_values[value_type])
+                clearInterval(self.intervals[value_type])
+            }
+        }, data.delays.value_update)
+    }
+
+    refresh_value(value_type, value)
+    {
+        this.values[value_type] = value
+        if(data.delays.value_update == 0)
+        {
+            this.screen_values[value_type] = value
+            this.set_screen_value(`${value_type}`, this.screen_values[value_type])
+        }
+        else
+        {
+            this.smooth_refresh(value_type)
+        }
     }
 
     refresh_button(button)
     {
-        main_ui.get_id("game-button").src = button
+        get_id("game-button").src = button
     }
 
-    add_combo_message(a_for_what, a_score = 0, a_combo = 0)
+    hide_bonus_display()
     {
-        this.combo_messages.push({for_what: a_for_what, score: a_score, combo: a_combo})
-        if(this.displaying_combo_messages == false)
-            this.show_combo_message(0)
-    }
-
-    show_combo_message(index)
-    {
-        const message = this.combo_messages[index]
-        this.displaying_combo_messages = true
-        let html = main_ui.to_img_tag(get_src("combo", message.for_what), "for-what")
-        if(message.combo > 0)
-        {
-            html += main_ui.str_number_to_div_tag("*" + message.combo)
-        }
-        if(message.score > 0)
-        {
-            html += "<br>"
-            html += main_ui.str_number_to_div_tag("+" + message.score + " ")
-        }
-        const display = main_ui.get_id("combo-display")
-        display.innerHTML = html
-        this.show_combo_display_value()
-        let self = this
-        this.combo_display_timeout = setTimeout(function(){
-            self.combo_messages.shift()
-            if(self.combo_messages.length == 0)
-            {
-                self.hide_combo_display_value()
-                self.displaying_combo_messages = false
-            }
-            else
-            {
-                self.show_combo_message(0)
-            }
-        }, data.delays.combo_display)
-    }
-
-    hide_combo_display_value()
-    {
-        const display = main_ui.get_id("combo-display")
-        display.style.transition = data.delays.combo_display_fade_out + "ms"
+        const display = get_id("bonus-display")
+        display.style.transition = data.delays.bonus_display_fade_out + "ms"
         display.classList.add("hidden")
     }
 
-    show_combo_display_value()
+    show_bonus_display()
     {
-        const display = main_ui.get_id("combo-display")
+        const display = get_id("bonus-display")
         display.style.transition = "0ms"
         display.classList.remove("hidden")
     }
 
-    clear_combo_display_value()
+    bonus_display_game_over()
     {
-        main_ui.get_id("combo-display").innerHTML = ""
+        this.bonus_messages = new Array()
+        clearTimeout(this.bonus_display_timeout)
+        const display = get_id("bonus-display")
+        display.innerHTML = to_img_tag(get_src("bonus_display", "game_over"))
+        disable_dragging_imgs(display)
+        this.show_bonus_display()
     }
 }

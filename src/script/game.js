@@ -4,32 +4,7 @@
 
 /*----------------------------------------------------------------------------------------------------*/
 
-const GameState = 
-{
-    ready_to_start: 0,
-    active: 1,
-    paused: 2,
-    end: 3,
-}
-
-const GameSpeed = 
-{
-    slow: 0,
-    normal: 1,
-    fast: 2,
-}
-
 const GameSpeedList = [GameSpeed.slow, GameSpeed.normal, GameSpeed.fast]
-
-const GameMode = 
-{
-    classic: 0,
-    modified: 1,
-    extended: 2,
-    extreme: 3,
-    custom: 4,
-    normal: 5,
-}
 
 const GameButtons =
 {
@@ -41,15 +16,16 @@ const GameModeList = [GameMode.classic, GameMode.modified, GameMode.extended, Ga
 
 class Game
 {
-    constructor(game_data, ui)
+    constructor(game_data, ui, brick_generator)
     {
+        this.data = game_data
+        this.ui = ui
+        this.brick_generator = brick_generator
         this.next_brick = null
         this.cur_brick = null
         this.ghost = null
         this.burn_preview = null
-        this.ui = ui
         this.score_counter = new ScoreCounter(this.ui)
-        this.data = game_data
         this.score = 0
         this.lines = 0
         this.state = GameState.ready_to_start
@@ -63,26 +39,30 @@ class Game
     {
         this.ui.create_board("board", this.data.normal_mode)
         this.ui.create_board("preview", this.data.normal_mode)
+        keyboard.reverse_controls = this.data.normal_mode
         this.ui.create_digits("score")
         this.ui.create_digits("lines")
         this.ui.refresh_board(this.board)
         this.ui.refresh_preview_board(this.preview_board)
-        this.ui.refresh_score(this.score)
-        this.ui.refresh_lines(this.lines)
+        this.ui.refresh_value("score", this.score)
+        this.ui.refresh_value("lines", this.lines)
         this.ui.refresh_game_mode(this.data.game_mode)
         this.ui.refresh_speed(this.data.speed)
         this.ui.refresh_button(this.button)
         this.ui.refresh_controls(this.data.normal_mode)
+        this.ui.hide_bonus_display()
         main_ui.set_music(this.data.game_mode)
     }
     
     start()
     {
-        this.next_brick = this.generate_brick()
+        const x = get_center_index(this.preview_board.width)
+        const y = get_center_index(this.preview_board.height)
+        this.next_brick = this.brick_generator.generate_brick(this.data.bricks_bags_array, this.data.default_bricks_bag, this.data.colors_bag, x, y)
         this.spawn_next_brick()
         this.state = GameState.active
         this.try_to_play_music()
-        this.try_to_play_sound("start")
+        try_to_play_sound("start")
     }
 
     pause()
@@ -91,15 +71,9 @@ class Game
         main_ui.pause_music()
     }
 
-    try_to_play_sound(sound_name)
-    {
-        if(this.data.settings.sounds == true)
-            main_ui.play_sound(sound_name)
-    }
-
     try_to_play_music()
     {
-        if(this.data.settings.music == true)
+        if(Settings.get_property("music") == true)
             main_ui.play_music()
     }
 
@@ -107,7 +81,7 @@ class Game
     {
         this.state = GameState.active
         this.try_to_play_music()
-        this.try_to_play_sound("resume")
+        try_to_play_sound("resume")
     }
     
     end()
@@ -115,66 +89,19 @@ class Game
         this.state = GameState.end
         this.button = GameButtons.menu
         this.ui.refresh_button(this.button)
-        save_score(this.score, this.lines, this.data.game_mode, this.data.speed)
+        this.ui.bonus_display_game_over()
+        ScoreBoard.add(this.score, this.lines, this.data.game_mode, this.data.speed)
+        control.timer.stop()
         main_ui.pause_music()
-    }
-
-    random_number(range)
-    {
-        return Math.floor(Math.random() * range)
-    }
-
-    random_element(array)
-    {
-        return array[this.random_number(array.length)]
-    }
-
-    get_random_from_chances_table(chances_table)
-    {
-        let number_of_types = chances_table.length
-        let max_separator = chances_table[number_of_types - 1].separator
-        let separator = this.random_number(max_separator)
-        for(let i = 0; i < number_of_types; i++)
-        {
-            let elem = chances_table[i]
-            if(separator < elem.separator)
-                return elem.value
-        }
-        return new Array()
-    }
-
-    try_to_generate_multiplier(brick)
-    {
-        if(data.max_multiplier > 0)
-        {
-            if(this.random_number(data.random_range) < data.multiplier_chance)
-            {
-                let multiplier = this.random_number(data.max_multiplier - 1) + 2
-                let random_pixel = this.random_element(brick.pixels)
-                random_pixel.content = multiplier
-            }
-        }
-    }
-
-    generate_brick()
-    {
-        let random_bricks_array = game.data.default_brick_array
-        if(this.data.bricks_array.length > 0)
-            random_bricks_array = this.get_random_from_chances_table(this.data.bricks_array)            
-        if(random_bricks_array.length == 0)
-            random_bricks_array = game.data.default_brick_array
-        const vectors_list = this.random_element(random_bricks_array)
-        const color = this.random_element(data.colors)
-        const x = get_center_index(this.preview_board.width)
-        const y = get_center_index(this.preview_board.height)
-        let brick = Brick.create(x, y, color, vectors_list)
-        return brick
     }
 
     generate_next_brick()
     {
         this.preview_board.remove_brick(this.next_brick)
-        this.next_brick = this.generate_brick()
+        const x = get_center_index(this.preview_board.width)
+        const y = get_center_index(this.preview_board.height)
+        this.next_brick = this.brick_generator.generate_brick(this.data.bricks_bags_array, this.data.default_bricks_bag, this.data.colors_bag, x, y)
+        this.try_to_add_multiplier(this.next_brick)
         this.preview_board.add_brick(this.next_brick)
         this.ui.refresh_preview_board(this.preview_board)
     }
@@ -188,69 +115,73 @@ class Game
 
     try_to_modify(brick)
     {
-        this.try_to_generate_multiplier(brick)
-        if(this.random_number(data.random_range) < data.chance_to_modify)
+        const modifier = this.brick_generator.try_to_generate_modifier(this.data.modifiers_array)
+        if(modifier != null)
         {
-            let modifier = this.get_random_from_chances_table(this.data.modifiers_array)
             brick.set_modifier(modifier) 
-            this.try_to_play_sound(data.ModifierTypeToSoundNames[modifier]) 
+            try_to_play_sound(data.ModifierTypeToSoundNames[modifier]) 
+        }
+    }
+
+    try_to_add_multiplier(brick)
+    {
+        if(this.data.multipliers == true)
+        {
+            const multiplier = this.brick_generator.try_to_generate_multiplier()
+            if(multiplier > 0)
+               this.brick_generator.random_element(brick.pixels).content = multiplier
         }
     }
 
     spawn_next_brick()
     {
-        start_game_tick()
-        step()
-        this.score_counter.reset()  
+        control.timer.decrease_delay()
+        this.score_counter.reset()
         this.create_cur_brick()
-        this.generate_next_brick()
-        if(game.data.modified == true)
-            this.try_to_modify(this.cur_brick)
+        this.generate_next_brick()    
+        this.try_to_modify(this.cur_brick)
         if(this.board.is_space_for_brick(this.cur_brick))
         {
             this.commit_move()
+            this.try_to_stick()
         }
         else
         {
-            
             this.board.add_brick(this.cur_brick)
             this.remove_ghost()
             this.ui.refresh_board(this.board)
             this.end()
-            stop_game_tick()
-            show_game_over()
+            control.game_over()
         }
     }
 
     substract_bricks(brick1, brick2)
     {
-        let delete_indexes = new Array()
+        let new_pixels = new Array()
         for(let i1 = 0; i1 < brick1.pixels.length; ++i1)
         {
+            let collides = false
             for(let i2 = 0; i2 < brick2.pixels.length; ++i2)
             {
                 if(brick1.get_pixel_x(i1) == brick2.get_pixel_x(i2) &&
                     brick1.get_pixel_y(i1) == brick2.get_pixel_y(i2))
                 {
-                    delete_indexes.push(i1)
+                    collides = true
                     break
                 }
             }
-        }
-        let new_pixels = new Array()
-        for(let i = 0; i < brick1.pixels.length; ++i)
-        {
-            if(!delete_indexes.includes(i))
-                new_pixels.push(brick1.pixels[i])
+            if(!collides)
+                new_pixels.push(brick1.pixels[i1])
         }
         brick1.pixels = new_pixels
     }
 
     generate_ghost()
     {
-        this.ghost = Brick.copy(this.cur_brick)
-        this.ghost.ghostify()
-        this.board.hard_drop(this.ghost)
+        let new_ghost = Brick.copy(this.cur_brick)
+        new_ghost.ghostify()
+        this.board.hard_drop(new_ghost)
+        this.ghost = new_ghost
         if(this.ghost.modifier == ModifierType.fire)
         {
             this.burn_preview = this.board.find_pixels_to_burn(this.ghost)
@@ -275,7 +206,7 @@ class Game
     refresh_ghost()
     {
         this.remove_ghost()
-        if(this.data.settings["ghost"] == true)
+        if(Settings.get_property("ghost") == true)
             this.generate_ghost()
         else
         {
@@ -283,61 +214,84 @@ class Game
             this.burn_preview = null
         }
     }
-    
-    refresh_settings(settings)
+
+    refresh_brick(brick)
     {
-        this.data.settings = settings
+        this.board.remove_brick(brick)
+        this.commit_move()
+    }
+    
+    refresh_settings()
+    {
+        if(Settings.get_property("bonus_display") == false)
+            this.ui.bonus_messages = new Array()
         this.board.remove_brick(this.cur_brick)
         this.commit_move()
-        if(this.data.settings.music == false)
+        if(Settings.get_property("music") == false)
             main_ui.pause_music()
     }
 
-    move_x(vect)
+    try_to_move_x(vect)
     {
-        if(this.cur_brick.move == true)
+        if(this.cur_brick.can_move == true && this.can_move_brick(this.cur_brick, vect))
         {
             this.board.remove_brick(this.cur_brick)
             this.cur_brick.x += vect
-            if(!this.board.is_space_for_brick(this.cur_brick))
-            {
-                this.cur_brick.x += -vect
-                this.commit_move()
-            }
-            else if(this.board.check_stick(this.cur_brick) == true)
-            {
-                this.place()
-                this.try_to_play_sound("stick")
-            }
-            else
-            {
-                this.commit_move()
-            }
+            this.commit_move()
+            this.try_to_stick()
         }
     }
 
-    move_down()
+    can_move_brick(brick, x = 0, y = 0)
     {
-        this.board.remove_brick(this.cur_brick)
-        ++this.cur_brick.y
-        if(!this.board.is_space_for_brick(this.cur_brick))
+        if(this.board.check_stick(brick) == true)
+            return false
+        this.board.remove_brick(brick)
+        let test = Brick.copy(brick)
+        test.x += x
+        test.y += y
+        const can_move = this.board.is_space_for_brick(test)
+        this.board.add_brick(brick)
+        return can_move
+    }
+
+    can_rotate_brick(brick)
+    {
+        if(this.board.check_stick(brick) == true)
+            return false
+        this.board.remove_brick(brick)
+        let test = Brick.copy(brick)
+        test.rotate()
+        const can_move = this.board.is_space_for_brick(test)
+        this.board.add_brick(brick)
+        return can_move
+    }
+
+    try_to_move_down()
+    {
+        if(this.can_move_brick(this.cur_brick, 0, 1))
         {
-            --this.cur_brick.y
-            this.place()
-            this.try_to_play_sound("place")
+            this.board.remove_brick(this.cur_brick)
+            ++this.cur_brick.y
+            this.commit_move()
+            this.try_to_stick()
         }
         else
         {
-            if(this.board.check_stick(this.cur_brick) == true)
-            {
-                this.place()
-                this.try_to_play_sound("stick")
-            }
-            else
-            {
-                this.commit_move()
-            }
+            this.place()
+            try_to_play_sound("place")
         }
+    }
+
+    try_to_stick()
+    {
+        if(this.board.check_stick(this.cur_brick) == true)
+        {
+            this.place()
+            try_to_play_sound("stick")
+            return true
+        }
+        return false
     }
 
     commit_move()
@@ -349,41 +303,21 @@ class Game
 
     read_selected_brick()
     {
-        let modifier = this.cur_brick.modifier
-        this.cur_brick = new Brick()
-        this.cur_brick.pixels = this.board.get_selected_pixels()
-        this.cur_brick.rotate = false
-        this.cur_brick.move = false
-        this.cur_brick.modifier = modifier
-    }
-
-    try_to_enable_gravity(brick)
-    {
-        if(brick.pixels.length == 0)
-            return false
-        if(this.board.check_stick(brick) == true)
+        let selected_pixels = this.board.get_selected_pixels()
+        if(selected_pixels.length > 0)
         {
-            this.try_to_play_sound("stick")
-            return false
+            let selected_brick = new Brick()
+            selected_brick.modifier = selected_pixels[0].modifier
+            selected_brick.pixels = selected_pixels
+            return selected_brick
         }
-        this.board.remove_brick(brick)
-        if(brick.modifier == ModifierType.steel)
-        {
-            let compressed = this.board.compress(brick)
-            this.commit_move()
-            return compressed
-        }
-        ++brick.y
-        let can_move = this.board.is_space_for_brick(brick)
-        --brick.y
-        this.commit_move()
-        return can_move
+        return null
     }
 
     add_score(score)
     {
         this.score += score
-        this.ui.refresh_score(this.score)
+        this.ui.refresh_value("score", this.score)
     }
 
     remove_lines(lines)
@@ -391,24 +325,25 @@ class Game
         if(lines.length > 0)
         {
             this.board.remove_lines(lines)
+            this.ui.refresh_board(this.board)
             this.add_score(this.score_counter.count_score_for_lines(lines))
             this.lines += lines.length
-            this.ui.refresh_lines(this.lines)
-            this.try_to_play_sound("lines")
+            this.ui.refresh_value("lines", this.lines)
+            try_to_play_sound("lines")
         }
     }
 
     try_to_compress()
     {
-        this.cur_brick.rotate = false
-        this.cur_brick.move = false
+        this.cur_brick.can_rotate = false
+        this.cur_brick.can_move = false
         this.board.remove_brick(this.cur_brick)
         let compressed = this.board.compress(this.cur_brick)
         this.commit_move()
         if(compressed)
         {
             this.add_score(this.score_counter.count_score_for_compress())
-            this.try_to_play_sound("compress")
+            try_to_play_sound("compress")
             return true
         }
         return false
@@ -421,7 +356,19 @@ class Game
         if(stats.melted > 0)
             this.add_score(this.score_counter.count_score_for_melting(stats.melted))
         this.spawn_next_brick()
-        this.try_to_play_sound("burn")
+        try_to_play_sound("burn")
+    }
+
+    try_to_enable_gravity()
+    {
+        this.cur_brick.can_rotate = false
+        this.cur_brick.can_move = false
+        if(this.can_move_brick(this.cur_brick, 0, 1))
+        {
+            this.add_score(this.score_counter.count_score_for_recursive_gravity())
+            return true
+        }
+        return false
     }
 
     place()
@@ -438,11 +385,15 @@ class Game
             default:
                 this.board.select_brick(this.cur_brick)
                 this.remove_lines(this.find_lines())
-                this.read_selected_brick()
-                if(this.try_to_enable_gravity(this.cur_brick) == true)
-                    this.add_score(this.score_counter.count_score_for_recursive_gravity())
-                else
-                    this.spawn_next_brick()
+                let selected_brick = this.read_selected_brick()
+                if(selected_brick != null)
+                {
+                    this.cur_brick = selected_brick
+                    this.refresh_brick(this.cur_brick)
+                    if(this.try_to_enable_gravity() == true)
+                        break
+                }
+                this.spawn_next_brick()
         }
     }
 
@@ -474,38 +425,28 @@ class Game
         let distance = this.board.hard_drop(this.cur_brick)
         this.add_score(this.score_counter.count_score_for_hard_drop(distance))
         this.place()
-        this.try_to_play_sound("hard_drop")
+        try_to_play_sound("hard_drop")
+    }
+
+    try_to_soft_drop()
+    {
+        this.try_to_move_down()
+        this.add_score(this.score_counter.count_score_for_soft_drop())
     }
 
     try_to_rotate()
     {
-        if(this.cur_brick.rotate == true)
+        if(this.cur_brick.can_rotate == true && this.can_rotate_brick(this.cur_brick))
         {
             this.board.remove_brick(this.cur_brick)
-            this.cur_brick.rotate_right()
-            if(!this.board.is_space_for_brick(this.cur_brick))
-            {
-                this.cur_brick.rotate_left()
-                this.commit_move()
-                this.try_to_play_sound("no_rotate")  
-            }
-            else 
-            {
-                if(this.board.check_stick(this.cur_brick) == true)
-                {
-                    this.place()
-                    this.try_to_play_sound("stick")
-                }
-                else
-                {
-                    this.commit_move()
-                }
-                this.try_to_play_sound("rotate")        
-            }
+            this.cur_brick.rotate()
+            this.commit_move()
+            this.try_to_stick()
+            try_to_play_sound("rotate")        
         }
         else
         {
-            this.try_to_play_sound("no_rotate")
+            try_to_play_sound("no_rotate")
         }
     }
 }

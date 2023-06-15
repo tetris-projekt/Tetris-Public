@@ -29,6 +29,7 @@ const dirs =
             burn: "burn.ogg",
             compress: "compress.ogg",
             clear_scores: "clear_scores.ogg",
+            bonus_message: "bonus_message.ogg",
             delete: "delete.ogg",
             end: "end.ogg",
             froze: "froze.ogg",
@@ -45,6 +46,7 @@ const dirs =
             resume: "resume.ogg",
             rotate: "rotate.ogg",
             select: "select.ogg",
+            selector: "selector.ogg",
             set_on_fire: "set_on_fire.ogg",
             start: "start.ogg",
             steel: "steel.ogg",
@@ -64,35 +66,37 @@ const dirs =
             
         },
 
+        bonus_display:
+        {
+            burning: "burning.png",
+            compressing: "compressing.png",
+            game_over: "game_over.png",
+            melting: "melting.png",
+            multipliers: "multipliers.png",
+            recursive_gravity: "recursive_gravity.png",
+            single: "single.png",
+            double: "double.png",
+            triple: "triple.png",
+            tetris: "tetris.png",
+            pentatris: "pentatris.png",
+            hexatris: "hexatris.png",
+            heptatris: "heptatris.png",
+            octotris: "octotris.png",
+            enneatris: "enneatris.png",
+            dekatris: "dekatris.png",
+            impossibletris: "impossibletris.png",
+        },
+
         brick_editor:
         {
             add: "add.png",
             brick_editor: "brick_editor.png",
             cross: "cross.png",
             delete: "del.png",
-            modified: "modified.png",
             move_center: "move_center.png",
-        },
-
-        brick_type:
-        {
-            custom: "custom.png",
-            p1: "p1.png",
-            p2: "p2.png",
-            p3: "p3.png",
-            p4: "p4.png",
-            p5: "p5.png",
-        },
-
-        combo:
-        {
-            burning: "burning.png",
-            compressing: "compressing.png",
-            game_over: "game_over.png",
-            line: "line.png",
-            melting: "melting.png",
             multipliers: "multipliers.png",
-            recursive_gravity: "recursive_gravity.png",
+            p1_5: "p1_5.png",
+            p4: "p4.png",
         },
 
         controls:
@@ -118,7 +122,6 @@ const dirs =
             "-": "dash.png",
             "+": "plus.png",
             "/": "slash.png",
-            "*": "multiple.png",
             " ": "space.png",
         },
 
@@ -155,17 +158,6 @@ const dirs =
         {
             back: "back.png",
             how_to_play: "how_to_play.png",
-            page1: "page1.png",
-            page2: "page2.png",
-            page3: "page3.png",
-            page4: "page4.png",
-            page5: "page5.png",
-        },
-
-        info:
-        {
-            info: "info.png",
-            ok: "ok.png",
         },
 
         main:
@@ -185,11 +177,12 @@ const dirs =
             play: "play.png",
         },
 
-        pause:
+        modifier_type:
         {
-            game_paused: "game_paused.png",
-            restart: "restart.png",
-            resume: "resume.png",
+            fire: "fire.png",
+            glue: "glue.png",
+            ice: "ice.png",
+            steel: "steel.png",
         },
 
         quit:
@@ -197,6 +190,13 @@ const dirs =
             cancel: "cancel.png",
             quit: "quit.png",
             really_quit: "really_quit.png",
+        },
+
+        pause:
+        {
+            game_paused: "game_paused.png",
+            restart: "restart.png",
+            resume: "resume.png",
         },
 
         restart:
@@ -209,6 +209,7 @@ const dirs =
         settings:
         {
             auto_pause: "auto_pause.png",
+            bonus_display: "bonus_display.png",
             ghost: "ghost.png",
             music: "music.png",
             save: "save.png",
@@ -222,6 +223,16 @@ const dirs =
             normal: "normal.png",
             slow: "slow.png",
             speed: "speed.png",
+        },
+
+        tutorial_pages:
+        {
+            controls: "controls.png",
+            goal: "goal.png",
+            end: "end.png",
+            recursive_gravity: "recursive_gravity.png",
+            game_modes: "game_modes.png",
+            modifiers: "modifiers.png",
         },
     }
 }
