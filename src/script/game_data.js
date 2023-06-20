@@ -7,10 +7,15 @@
 class GameData
 {
     
-    constructor(game_mode, game_speed)
+    constructor(game_mode, game_speed, board_size, preview_board_size)
     {
         this.game_mode = game_mode
         this.speed = game_speed
+        this.board_sizes =
+        {
+            board: board_size,
+            preview: preview_board_size,
+        }
         this.multipliers = this.get_multipliers()
         this.colors_bag = this.colors_bag_init()
         this.modifiers_array = this.modifiers_array_init()

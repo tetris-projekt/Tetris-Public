@@ -6,178 +6,102 @@
 
 class Control
 {
-    constructor(timer)
+    constructor()
     {
         this.cur_window = null
-        this.selected_button_index = null
         this.buttons = null
-        this.timer = timer
+        this.selected_button_index = null
     }
 
-    /*------------------------GAME------------------------*/
-
-    state_of_game_is(state)
+    set_window(window)
     {
-        return game != null && game.state == state
+        this.try_to_unselect()
+        this.cur_window = window
+        this.buttons = get_all_class_from_class("button", `${data.WindowNameToClass[this.cur_window]} window`)
+        this.selected_button_index = null
     }
-    
-    try_to_pause()
-    {
-        if(this.state_of_game_is(GameState.active))
-        {
-            this.pause()
-            try_to_play_sound("pause")
-        }
-        else if(this.state_of_game_is(GameState.paused))
-        {
-            this.resume()
-        }
-    }
-
-    try_to_restart()
-    {
-        if(this.state_of_game_is(GameState.end))
-        {
-            this.play()
-        }
-        else
-        {
-            if(this.state_of_game_is(GameState.active))
-                this.pause()
-            if((this.state_of_game_is(GameState.active) || this.state_of_game_is(GameState.paused))
-                && this.cur_window != "really-restart")
-                this.really_restart()
-        }
-    }
-
-    soft_drop_start()
-    {
-        if(this.state_of_game_is(GameState.active))
-            this.timer.stop()
-    }
-
-    soft_drop()
-    {
-        if(this.state_of_game_is(GameState.active))
-            game.try_to_soft_drop()
-    }
-
-    soft_drop_end()
-    {
-        if(this.state_of_game_is(GameState.active))
-            this.timer.start()
-    }
-
-    move_left()
-    {
-        if(this.state_of_game_is(GameState.active))
-            game.try_to_move_x(-1)
-    }
-
-    move_right()
-    {
-        if(this.state_of_game_is(GameState.active))
-            game.try_to_move_x(1)
-    }
-
-    rotate()
-    {
-        if(this.state_of_game_is(GameState.active))
-            game.try_to_rotate()
-    }
-
-    hard_drop()
-    {
-        if(this.state_of_game_is(GameState.active))
-            game.try_to_hard_drop()
-        if(this.state_of_game_is(GameState.active))
-            this.timer.restart()
-    }
-
-    /*------------------------GAME------------------------*/
-
-
-
-    /*-----------------------GENERAL----------------------*/
 
     open_window(display, window)
     {
-        this.try_to_unselect()
         main_ui.refresh_window(display, window)
-        this.cur_window = window
-        this.selected_button_index = null
-        this.buttons = get_all_class_from_class("button", `${this.cur_window} window`)
+        this.set_window(window)
         if(isIn(window, data.transparent_windows))
             main_ui.display_add_opacity(display)
         else
             main_ui.display_remove_opacity(display)
     }
 
-    increase_selected_brick_index()
+    button_index_exist(index)
     {
-        if(this.selected_button_index == null)
-            this.selected_button_index = this.buttons.length - 1
-        else
-            this.selected_button_index = (this.selected_button_index + 1) % this.buttons.length
+        return (index >= 0 && index < this.buttons.length)
     }
 
-    decrease_selected_brick_index()
+    try_to_change_selected_button_index(by)
     {
-        if(this.selected_button_index == null)
-            this.selected_button_index = 0
-        else
+        if(!(state_of_game_is(GameState.active) && this.cur_window == WindowName.game))
         {
-            this.selected_button_index = (this.selected_button_index - 1 + this.buttons.length) % this.buttons.length
+            let new_index = null
+            if(this.selected_button_index == null)
+            {
+                if(by > 0)
+                    new_index = this.buttons.length - 1
+                else
+                    new_index = 0
+                by = -by
+            }
+            else
+            {
+                new_index = this.selected_button_index
+                if(this.is_selected(this.buttons[this.selected_button_index]))
+                    new_index += by
+            }
+            while(this.button_index_exist(new_index))
+            {
+                const button = this.buttons[new_index]
+                const button_style = getComputedStyle(button)
+                if(button_style.pointerEvents == "none" || button_style.display == "none" || button.classList.contains("control"))
+                    new_index += by
+                else
+                    break
+            }
+            if(this.button_index_exist(new_index))
+            {
+                this.try_to_unselect()
+                this.selected_button_index = new_index
+                this.select(this.buttons[this.selected_button_index])
+                try_to_play_sound("select")
+            }
         }
     }
 
-    select_next()
+    is_selected(button)
     {
-        if(this.cur_window != "game")
-        {
-            this.try_to_unselect()
-            do
-                this.increase_selected_brick_index()
-            while(getComputedStyle(this.buttons[this.selected_button_index]).pointerEvents == "none")
-            this.select(this.buttons[this.selected_button_index])
-        }
-    }
-
-    select_previous()
-    {
-        if(this.cur_window != "game")
-        {
-            this.try_to_unselect()
-            do
-                this.decrease_selected_brick_index()
-            while(getComputedStyle(this.buttons[this.selected_button_index]).pointerEvents == "none")
-            this.select(this.buttons[this.selected_button_index])
-        }
+        return (button != null && button.classList.contains("selected"))
     }
 
     select(button)
     {
-        button.classList.add("selected")
-        try_to_play_sound("select")
+        if(button != null)
+            button.classList.add("selected")
     }
 
     try_to_unselect()
     {
         const button = get_first_from_class("selected")
-        if(button != null)   
-            this.unselect(button)
-    }
-
-    unselect(button)
-    {
-        button.classList.remove("selected")
+        if(button != null) 
+            button.classList.remove("selected")
     }
 
     click_selected()
     {
         const button = get_first_from_class("selected")
-        if(button != null)   
+        if(button != null)
+        {
+            let window = this.cur_window
             button.click()
+            if(this.cur_window == window)
+                this.select(button)
+        }
     }
 
     menu()
@@ -185,16 +109,6 @@ class Control
         game = null
         let menu_ui = new MenuUI()
         menu = new Menu(menu_ui)
-    }
-
-    create_new_game_object()
-    {
-        let game_mode = GameModeList[Menu.get_game_mode_index()]
-        let speed = GameSpeedList[Menu.get_speed_index()]
-        let properties = new GameData(game_mode, speed)
-        let ui = new GameUI()
-        let brick_generator = new BrickGenerator()
-        return new Game(properties, ui, brick_generator)
     }
 
     brick_editor()
@@ -207,45 +121,7 @@ class Control
     save_editor()
     {
         editor.save()
-        this.menu()
-        try_to_play_sound("back")
-    }
-
-    play()
-    {
-        this.open_window("game", "game")
-        main_ui.hide_display("windows")
-        game = this.create_new_game_object()
-        game.start()
-        this.timer.tick_delay = data.GameSpeedToDelays[game.data.speed]
-        this.timer.start()
-    }
-
-    pause()
-    {
-        this.open_window("windows", "pause")
-        game.pause()
-        this.timer.stop()
-    }
-
-    resume()
-    {
-        main_ui.hide_display("windows")
-        this.cur_window = "game"
-        game.resume()
-        this.timer.start()
-    }
-
-    restart()
-    {
-        game.end()
-        this.play()
-    }
-
-    really_restart()
-    {
-        this.open_window("windows", "really-restart")
-        try_to_play_sound("really")
+        editor = null
     }
 
     how_to_play()
@@ -257,22 +133,18 @@ class Control
 
     go_back()
     {
-        if(game != null)
-        {
-            if(game.state == GameState.paused)
-            {
-                this.open_window("windows", "pause")
-            }
-            else
-            {
-                main_ui.hide_display("windows")
-                this.cur_window = "game"
-            }
-        }
+        if(isIn(this.cur_window, [WindowName.menu, WindowName.pause, WindowName.game]))
+            return
+        if(this.cur_window == WindowName.editor)
+            this.save_editor()
+        if(this.cur_window == WindowName.settings)
+            this.save_settings()
+        if(this.cur_window == WindowName.how_to_play)
+            tutorial_control.kill_animation()
+        if(state_of_game_is(GameState.paused))
+            this.open_window("windows", WindowName.pause)
         else
-        {
             this.menu()
-        }
         try_to_play_sound("back")
     }
 
@@ -289,49 +161,13 @@ class Control
         settings = null
         if(game != null)
             game.refresh_settings()
-        this.go_back()
-    }
-
-    really_quit()
-    {
-        this.open_window("windows", "really-quit")
-        try_to_play_sound("really")
-    }
-
-    quit()
-    {
-        game.end()
-        this.menu()
-        try_to_play_sound("end")
     }
 
     best_scores()
     {
-        this.open_window("windows", "best-scores")
+        this.open_window("windows", WindowName.best_scores)
         let score_board_ui = new ScoreBoardUI()
         score_board = new ScoreBoard(score_board_ui)
         try_to_play_sound("open")
     }
-
-    game_over()
-    {
-        this.open_window("windows", "game-over")
-        try_to_play_sound("end")
-    }
-
-    game_button_click()
-    {
-        if(this.state_of_game_is(GameState.active))
-        {
-            this.pause()
-            try_to_play_sound("pause")
-        }    
-        else
-        {
-            this.menu()
-            try_to_play_sound("open")
-        }
-    }
-
-    /*-----------------------GENERAL----------------------*/
 }

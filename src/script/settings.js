@@ -10,7 +10,7 @@ class Settings
     {
         this.ui = ui
         this.properties = Settings.get_properties()
-        control.open_window("windows", "settings")
+        control.open_window("windows", WindowName.settings)
         this.ui.create_properties()
         this.ui.refresh_properties(this.properties)
     }

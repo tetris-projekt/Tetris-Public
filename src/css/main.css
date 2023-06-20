@@ -31,7 +31,6 @@ body
 
 #footer-img
 {
-    float: right;
     height: 90%;
 }
 
@@ -87,7 +86,7 @@ body
 
 .disabled
 {
-    display: none;
+    display: none !important;
 }
 
 #baner
@@ -122,6 +121,18 @@ body
 {
     animation: select 0.16s;
     outline: solid #5cf8ff;
+}
+
+.property-name
+{
+    float: left;
+    height: 100%;
+}
+
+.toggle
+{
+    float: right;
+    height: 100%;
 }
 
 @keyframes select
@@ -245,18 +256,6 @@ body
     float: left;
 }
 
-.window.editor .property-name
-{
-    float: left;
-    height: 100%;
-}
-
-.window.editor .toggle
-{
-    float: right;
-    height: 100%;
-}
-
 .window.editor #editor-properties .property
 {
     height: 4em;
@@ -350,9 +349,15 @@ body
     height: 6rem;
 }
 
-.window.how-to-play .display.page
+.window.how-to-play .display.page:not(.wide)
 {
-    height: 45rem;
+    height: 41.2rem;
+    padding-block: 3rem;
+}
+
+.window.how-to-play .display.page.wide
+{
+    height: 47.2rem;
 }
 
 .window.how-to-play .selector.page-number img
@@ -367,7 +372,7 @@ body
 
 .window.how-to-play .selector.page-number
 {
-    aspect-ratio: 4 / 1;
+    aspect-ratio: 5 / 1;
 }
 
 .window.how-to-play .selector.page-number .value
@@ -380,23 +385,27 @@ body
     height: 6rem;
 }
 
+.window.how-to-play #restart-animation
+{
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 4rem;
+}
+
+.window.how-to-play #tutorial-hard-drop
+{
+    position: absolute;
+    right: 4rem;
+    top: 0;
+    height: 4rem;
+}
+
 /*-------------HOW-TO-PLAY--------------*/
 
 
 
 /*---------------SETTINGS---------------*/
-
-.window.settings .property-name
-{
-    float: left;
-    height: 100%;
-}
-
-.window.settings .toggle
-{
-    float: right;
-    height: 100%;
-}
 
 .window.settings .property
 {

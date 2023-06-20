@@ -8,25 +8,8 @@ class MainUI
 {
     constructor()
     {
-        this.music = null
-        document.body.innerHTML = windows["main_windows"]
+        document.body.innerHTML = windows[WindowName.main_windows]
         disable_dragging_imgs(document.body)
-    }
-
-    set_music(game_mode)
-    {
-        this.music = new Audio(data.GameModeToMusic[game_mode])
-        this.music.loop = true
-    }
-
-    pause_music()
-    {
-        this.music.pause()
-    }
-
-    play_music()
-    {
-        this.music.play()
     }
 
     play_sound(sound_name)
@@ -40,12 +23,12 @@ class MainUI
         return display.classList.contains("disabled")
     }
 
-    refresh_window(display_type, window_name)
+    refresh_window(display_type, window)
     {
         const display = get_first_from_class(`${display_type} display`)
         if(this.is_display_hidden(display))
             this.show_display(display_type)
-        display.innerHTML = windows[window_name]
+        display.innerHTML = windows[window]
         disable_dragging_imgs(display)
     }
 

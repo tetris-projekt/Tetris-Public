@@ -1,10 +1,10 @@
 /*----------------------------------------------------------------------------------------------------*/
 
-/*                                             TIMER                                                  */
+/*                                          GAME TIMER                                                */
 
 /*----------------------------------------------------------------------------------------------------*/
 
-class Timer
+class GameTimer
 {
     constructor()
     {
@@ -36,6 +36,5 @@ class Timer
         this.tick_delay -= data.delays.tick_step
         if(this.tick_delay < data.delays.min_tick)
             this.tick_delay = data.delays.min_tick
-        this.restart()
     }
 }

@@ -4,24 +4,83 @@
 
 /*----------------------------------------------------------------------------------------------------*/
 
+const html_creator = new HTMLCreator()
 let main_ui = null
 let keyboard = null
+let game_control = null
+let tutorial_control = null
 let control = null
 let menu = null
 let game = null
+let tutorial = null
 let editor = null
 let score_board = null
 let settings = null
 let how_to_play = null
 
-function isIn(value, array)
+function setup()
 {
-    for(let i = 0; i < array.length; ++i)
+    preload_content()
+    main_ui = new MainUI()
+    keyboard = new Keyboard()
+    let game_timer = new GameTimer()
+    game_control = new GameControl(game_timer)
+    let tutorial_timer = new TutorialTimer()
+    tutorial_control = new TutorialGameControl(tutorial_timer)
+    control = new Control()
+    control.menu()
+    set_listeners()
+}
+
+function preload_content()
+{
+    for(const dir in dirs["img"])
     {
-        if(value === array[i])
-            return true
+        for(const img in dirs["img"][dir])
+        {
+            let preloader = new Image()
+            preloader.src = get_src(dir, img, "img")
+        }
     }
-    return false
+
+    for(const dir in dirs["audio"])
+    {
+        for(const audio in dirs["audio"][dir])
+        {
+            const preloader = new Audio()
+            preloader.src = get_src(dir, audio, "audio")
+            preloader.preload = true
+        }
+    }
+}
+
+function set_listeners()
+{
+    document.body.onblur = () =>
+    {
+        if(Settings.get_property("auto_pause") == true)
+        {
+            if(state_of_game_is(GameState.active))
+                game_control.pause()
+        }
+    }
+    document.body.oncontextmenu = () =>
+    {
+        return false
+    }
+    document.onclick = () =>
+    {
+        control.try_to_unselect()
+    }
+    document.ondblclick = (event) =>
+    {
+        event.preventDefault()
+    }
+}
+
+function isIn(element, array)
+{
+    return array.includes(element)
 }
 
 function storage_set(name, item)
@@ -148,47 +207,7 @@ function get_center_index(length)
     return Math.floor((length - 1) / 2)
 }
 
-function setup()
+function state_of_game_is(state)
 {
-    preload_content()
-    main_ui = new MainUI()
-    keyboard = new Keyboard()
-    game_timer = new Timer()
-    control = new Control(game_timer)
-    set_listeners()
-    control.menu()
-}
-
-function preload_content()
-{
-    for(const dir in dirs["img"])
-    {
-        for(const img in dirs["img"][dir])
-        {
-            let preloader = new Image()
-            preloader.src = get_src(dir, img, "img")
-        }
-    }
-
-    for(const dir in dirs["audio"])
-    {
-        for(const audio in dirs["audio"][dir])
-        {
-            const preloader = new Audio()
-            preloader.src = get_src(dir, audio, "audio")
-            preloader.preload = true
-        }
-    }
-}
-
-function set_listeners()
-{
-    document.body.onblur = () =>
-    {
-        if(Settings.get_property("auto_pause") == true)
-        {
-            if(game != null && game.state == GameState.active)
-                control.pause()
-        }
-    }
+    return game != null && game.state == state
 }

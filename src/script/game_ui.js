@@ -9,6 +9,7 @@ class GameUI
 
     constructor()
     {
+        this.music = null
         this.values =
         {
             score: 0,
@@ -26,6 +27,28 @@ class GameUI
         }
     }
 
+    try_to_play_sound(sound_name)
+    {
+        if(Settings.get_property("sounds") == true)
+            main_ui.play_sound(sound_name)
+    }
+
+    set_music(game_mode)
+    {
+        this.music = new Audio(data.GameModeToMusic[game_mode])
+        this.music.loop = true
+    }
+
+    pause_music()
+    {
+        this.music.pause()
+    }
+
+    play_music()
+    {
+        this.music.play()
+    }
+
     create_digits(id_prefix)
     {
         let html = ""
@@ -34,14 +57,25 @@ class GameUI
         get_first_from_class(`value ${id_prefix}`).innerHTML = html
     }
 
-    create_board(id_prefix, reverse)
+    create_board(size, reverse)
+    {
+        this.create_any_board("board", size, reverse)
+    }
+    
+    create_preview_board(size, reverse)
+    {
+        this.create_any_board("preview", size, reverse)
+    }
+
+
+    create_any_board(id_prefix, size, reverse)
     {
         let html = ""
         if(reverse == false)
         {
-            for(let y = 0; y < data.board_sizes[id_prefix].height; ++y)
+            for(let y = 0; y < size.height; ++y)
             {
-                for(let x = 0; x < data.board_sizes[id_prefix].width; ++x)
+                for(let x = 0; x < size.width; ++x)
                     html += `<div id="${id_prefix}${y};${x}" class="pixel"></div>\n`
             }
         }
@@ -74,15 +108,15 @@ class GameUI
 
     refresh_board(board)
     {
-        this.refresh_any_board(board, "board")
+        this.refresh_any_board("board", board)
     }
 
     refresh_preview_board(preview_board)
     {
-        this.refresh_any_board(preview_board, "preview")
+        this.refresh_any_board("preview", preview_board)
     }
 
-    refresh_any_board(board, id_prefix)
+    refresh_any_board(id_prefix, board)
     {
         for(let y = 0; y < board.height; ++y)
         {
@@ -116,13 +150,14 @@ class GameUI
         return score
     }
 
-    set_screen_value(id_prefix, value)
+    instant_value_refresh(id_prefix, value)
     {
+        this.screen_values[id_prefix] = value
         let digits = slice_number(value)
         let number_of_digits = digits.length
         if(number_of_digits > data.digits_in_values)
         {
-            this.set_screen_value(id_prefix, this.get_max_value())
+            this.instant_value_refresh(id_prefix, this.get_max_value())
         }
         else
         {
@@ -139,7 +174,7 @@ class GameUI
         return separator / 10
     }
 
-    smooth_refresh(value_type)
+    smooth_value_refresh(value_type)
     {
         clearInterval(this.intervals[value_type])
         let self = this
@@ -147,56 +182,37 @@ class GameUI
             if(self.screen_values[value_type] < self.values[value_type])
             {
                 self.screen_values[value_type] += self.calculate_step(self.values[value_type] - self.screen_values[value_type])
-                self.set_screen_value(`${value_type}`, self.screen_values[value_type])
+                self.instant_value_refresh(`${value_type}`, self.screen_values[value_type])
             }
             else
             {
-                self.set_screen_value(`${value_type}`, self.screen_values[value_type])
+                self.instant_value_refresh(`${value_type}`, self.screen_values[value_type])
                 clearInterval(self.intervals[value_type])
             }
         }, data.delays.value_update)
     }
 
-    refresh_value(value_type, value)
+    refresh_score_value(score, instant = false)
+    {
+        this.refresh_value("score", score, instant)
+    }
+
+    refresh_lines_value(lines, instant = false)
+    {
+        this.refresh_value("lines", lines, instant)
+    }
+
+    refresh_value(value_type, value, instant)
     {
         this.values[value_type] = value
-        if(data.delays.value_update == 0)
-        {
-            this.screen_values[value_type] = value
-            this.set_screen_value(`${value_type}`, this.screen_values[value_type])
-        }
+        if(data.delays.value_update == 0 || instant == true)
+            this.instant_value_refresh(value_type, value)
         else
-        {
-            this.smooth_refresh(value_type)
-        }
+            this.smooth_value_refresh(value_type)
     }
 
     refresh_button(button)
     {
         get_id("game-button").src = button
-    }
-
-    hide_bonus_display()
-    {
-        const display = get_id("bonus-display")
-        display.style.transition = data.delays.bonus_display_fade_out + "ms"
-        display.classList.add("hidden")
-    }
-
-    show_bonus_display()
-    {
-        const display = get_id("bonus-display")
-        display.style.transition = "0ms"
-        display.classList.remove("hidden")
-    }
-
-    bonus_display_game_over()
-    {
-        this.bonus_messages = new Array()
-        clearTimeout(this.bonus_display_timeout)
-        const display = get_id("bonus-display")
-        display.innerHTML = to_img_tag(get_src("bonus_display", "game_over"))
-        disable_dragging_imgs(display)
-        this.show_bonus_display()
     }
 }

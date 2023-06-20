@@ -1,6 +1,6 @@
 const config = 
 {
-    "move_delay": 100, // (50-200)
+    "move_delay": 120, // (50-200)
     "start_delay_slow": 1000, // (1000-1300)
     "start_delay_normal": 700, // (700-1000)
     "start_delay_fast": 400, // (400-700)
@@ -8,8 +8,10 @@ const config =
     "min_tick_delay": 200, // (100-300)
     "soft_drop_delay": 50, // (50-100)
     "value_update_delay": 40, // (0-100)
-    "bonus_display_delay": 600, // (100-2000)
+    "bonus_display_delay": 400, // (100-2000)
     "bonus_display_fade_out_delay": 200, // (100-2000)
+    "tutorial_animation_frame_delay": 400, // (100-1000)
+    "delay_between_tutorial_animations": 1000, //(100-2000)
 
     /* scores (0-1000) */
     "score_for_first_line": 250,

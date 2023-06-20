@@ -99,6 +99,8 @@ class ScoreBoard
 
     static add(score, lines, game_mode, speed)
     {
+        if(score == 0)
+            return
         score_board = ScoreBoard.read_scoreboard()
         let new_score = 
         {
@@ -121,6 +123,7 @@ class ScoreBoard
         this.score_board = new Array()
         ScoreBoard.save(this.score_board)       
         this.ui.show_empty()
+        control.set_window(WindowName.best_scores)
         try_to_play_sound("clear_scores")
     }
 

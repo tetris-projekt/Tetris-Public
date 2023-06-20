@@ -101,10 +101,10 @@ const dirs =
 
         controls:
         {
-            hard_drop: "hard_drop.png",
             move_left: "move_left.png",
             move_right: "move_right.png",
             rotate: "rotate.png",
+            hard_drop: "hard_drop.png",
         },
         
         digits:
@@ -229,10 +229,18 @@ const dirs =
         {
             controls: "controls.png",
             goal: "goal.png",
-            end: "end.png",
             recursive_gravity: "recursive_gravity.png",
-            game_modes: "game_modes.png",
-            modifiers: "modifiers.png",
+            end: "end.png",
+            fire_modifier: "fire_modifier.png",
+            ice_modifier: "ice_modifier.png",
+            glue_modifier: "glue_modifier.png",
+            steel_modifier: "steel_modifier.png",
+            multipliers: "multipliers.png",
+            classic_game_mode: "classic_game_mode.png",
+            modified_game_mode: "modified_game_mode.png",
+            extended_game_mode: "extended_game_mode.png",
+            extreme_game_mode: "extreme_game_mode.png",
+            custom_game_mode: "custom_game_mode.png",
         },
     }
 }

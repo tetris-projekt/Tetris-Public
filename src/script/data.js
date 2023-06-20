@@ -35,17 +35,89 @@ const data =
     max_custom_bricks_number: 99,
     normal_number: 8,
     
-    transparent_windows: ["pause", "really-quit", "really-restart", "game-over"],
+    transparent_windows: [WindowName.pause, WindowName.really_quit, WindowName.really_restart, WindowName.game_over],
     
-    tutorial_page_names: 
+    WindowNameToClass:
+    {
+        [WindowName.menu]: "menu",
+        [WindowName.editor]: "editor",
+        [WindowName.game]: "game",
+        [WindowName.pause]: "pause",
+        [WindowName.how_to_play]: "how-to-play",
+        [WindowName.settings]: "settings",
+        [WindowName.really_quit]: "really-quit",
+        [WindowName.really_restart]: "really-restart",
+        [WindowName.best_scores]: "best-scores",
+        [WindowName.game_over]: "game-over",
+    },
+
+    TutorialPageNameList: 
     [
         "controls",
         "goal",
-        "end",
         "recursive_gravity",
-        "game_modes",
-        "modifiers",
+        "end",
+        "fire_modifier",
+        "ice_modifier",
+        "glue_modifier",
+        "steel_modifier",
+        "multipliers",
+        "classic_game_mode",
+        "modified_game_mode",
+        "extended_game_mode",
+        "extreme_game_mode",
+        "custom_game_mode",
     ],
+
+    TutorialPageNameListToAnimate:
+    {
+        "controls": false,
+        "goal": true,
+        "recursive_gravity": true,
+        "end": true,
+        "fire_modifier": true,
+        "ice_modifier": true,
+        "glue_modifier": true,
+        "steel_modifier": true,
+        "multipliers": true,
+        "classic_game_mode": true,
+        "modified_game_mode": true,
+        "extended_game_mode": true,
+        "extreme_game_mode": true,
+        "custom_game_mode": false,
+    },
+
+    TutorialPageNameToBrickGeneratorPreset:
+    {
+        "goal": {rotation: 3, gravity_bricks: false, multipliers: false, always_modifier: null, extended: false, modified: false},
+        "recursive_gravity": {rotation: 0, gravity_bricks: true, multipliers: false, const_modifier: null, extended: false, modified: false},
+        "end": {rotation: 0, gravity_bricks: false, multipliers: false, always_modifier: null, extended: false, modified: false},
+        "fire_modifier": {rotation: 3, gravity_bricks: false, multipliers: false, const_modifier: ModifierType.fire, extended: false, modified: false},
+        "ice_modifier": {rotation: 0, gravity_bricks: false, multipliers: false, const_modifier: ModifierType.ice, extended: false, modified: false},
+        "glue_modifier": {rotation: 3, gravity_bricks: false, multipliers: false, const_modifier: ModifierType.glue, extended: false, modified: false},
+        "steel_modifier": {rotation: 2, gravity_bricks: false, multipliers: false, const_modifier: ModifierType.steel, extended: false, modified: false},
+        "multipliers": {rotation: 0, gravity_bricks: false, multipliers: true, const_modifier: null, extended: false, modified: false},
+        "classic_game_mode": {rotation: 0, gravity_bricks: false, multipliers: false, const_modifier: null, extended: false, modified: false},
+        "modified_game_mode": {rotation: 0, gravity_bricks: false, multipliers: false, const_modifier: null, extended: false, modified: true},
+        "extended_game_mode": {rotation: 0, gravity_bricks: false, multipliers: false, const_modifier: null, extended: true, modified: false},
+        "extreme_game_mode": {rotation: 0, gravity_bricks: false, multipliers: false, const_modifier: null, extended: true, modified: true},
+    },
+
+    TutorialPageNameToFillBoardPreset:
+    {
+        "goal": {lines: true, cut_normal: true, cut_recursive: false, cut_push: false, gaps: 0, modifiers: 0, multipliers: 0},
+        "recursive_gravity": {lines: true, cut_normal: false, cut_recursive: true, cut_push: false, gaps: 0, modifiers: 0, multipliers: 0},
+        "end": {lines: true, cut_normal: false, cut_recursive: false, cut_push: false, gaps: 3, modifiers: 0, multipliers: 0},
+        "fire_modifier": {lines: true, cut_normal: true, cut_recursive: false, cut_push: false, gaps: 2, modifiers: 5, multipliers: 0},
+        "ice_modifier": {lines: true, cut_normal: false, cut_recursive: false, cut_push: false, gaps: 4, modifiers: 0, multipliers: 0},
+        "glue_modifier": {lines: true, cut_normal: true, cut_recursive: false, cut_push: false, gaps: 0, modifiers: 3, multipliers: 0},
+        "steel_modifier": {lines: true, cut_normal: false, cut_recursive: false, cut_push: true, gaps: 0, modifiers: 0, multipliers: 0},
+        "multipliers": {lines: true, cut_normal: true, cut_recursive: false, cut_push: false, gaps: 0, modifiers: 0, multipliers: 2},
+        "classic_game_mode": {lines: true, cut_normal: true, cut_recursive: false, cut_push: false, gaps: 0, modifiers: 0, multipliers: 0},
+        "modified_game_mode": {lines: true, cut_normal: true, cut_recursive: false, cut_push: false, gaps: 0, modifiers: 4, multipliers: 2},
+        "extended_game_mode": {lines: true, cut_normal: true, cut_recursive: false, cut_push: false, gaps: 0, modifiers: 0, multipliers: 0},
+        "extreme_game_mode": {lines: true, cut_normal: true, cut_recursive: false, cut_push: false, gaps: 0, modifiers: 4, multipliers: 2},
+    },
     
     keys:
     {
@@ -59,6 +131,7 @@ const data =
         select_next: ["ArrowRight", "ArrowDown"],
         select_previous: ["ArrowLeft", "ArrowUp"],
         click_selected: ["Enter", " "],
+        go_back: ["Escape"],
     },
     
     board_sizes:
@@ -66,6 +139,7 @@ const data =
         "board": {width: 10, height: 20},
         "preview": {width: 7, height: 5,},
         "edit": {width: 7, height: 5,},
+        "tutorial": {width: 10, height: 10},
     },
 
     colors: ["light-blue", "blue", "pink", "green", "yellow", "orange", "red"],
@@ -79,6 +153,8 @@ const data =
         value_update: get_config_number("value_update_delay", 0, 100),
         bonus_display: get_config_number("bonus_display_delay", 100, 2000),
         bonus_display_fade_out: get_config_number("bonus_display_fade_out_delay", 100, 2000),
+        tutorial_animation_frame: get_config_number("tutorial_animation_frame_delay", 100, 1000),
+        between_tutorial_animations: get_config_number("delay_between_tutorial_animations", 100, 2000),
     },
 
     LinesNumberToName:

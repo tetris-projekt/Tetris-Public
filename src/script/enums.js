@@ -40,3 +40,18 @@ GameMode =
     custom: 4,
     normal: 5,
 }
+
+WindowName =
+{
+    main_windows: 0,
+    menu: 1,
+    editor: 2,
+    game: 3,
+    pause: 4,
+    how_to_play: 5,
+    settings: 6,
+    really_quit: 7,
+    really_restart: 8,
+    best_scores: 9,
+    game_over: 10,
+}

@@ -6,15 +6,15 @@
 
 class Board
 {
-    constructor(width, height)
+    constructor(size)
     {
-        this.width = width
-        this.height = height
+        this.width = size.width
+        this.height = size.height
         this.board = new Array()
-        for(let y = 0; y < height; ++y)
+        for(let y = 0; y < this.height; ++y)
         {
             let row = new Array()
-            for(let x = 0; x < width; ++x)
+            for(let x = 0; x < this.width; ++x)
                 row.push(Pixel.create(x, y))
             this.board.push(row)
         }
@@ -127,30 +127,28 @@ class Board
     {
         if(!this.is_space_for_brick(brick))
             return
-        let start_y = brick.y
         while(this.is_space_for_brick(brick))
         {
             if(this.check_stick(brick) == true)
-                return brick.y - start_y
+                return
             ++brick.y
         }
         --brick.y
-        return brick.y - start_y
     }
 
     slide_all_above(pixel, max_height)
     {
         if(this.coords_exist(pixel.x, pixel.y))
         {
-            let x = pixel.x
-            for(let y = pixel.y; y > max_height; --y)
+            const x = pixel.x
+            for(let y = pixel.y - 1; y >= max_height; --y)
             {
-                let new_pixel = Pixel.copy(this.get_pixel(x, y - 1))
+                let new_pixel = Pixel.copy(this.get_pixel(x, y))
                 ++new_pixel.y
                 if(this.coords_exist(new_pixel.x, new_pixel.y))
-                this.set_pixel(new_pixel)
+                    this.set_pixel(new_pixel)
             }
-            this.get_pixel(x, 0).clear()
+            this.get_pixel(x, max_height).clear()
         }
     }
 
@@ -277,16 +275,17 @@ class Board
         }
         for(let i = 0; i < pixels_to_burn.length; ++i)
         {
-            let burned = pixels_to_burn[i].burn()
-            if(burned)
-                ++burned_pixels_stats.burned
-            else
+            const melted = pixels_to_burn[i].burn()
+            if(melted)
                 ++burned_pixels_stats.melted
+            else
+                ++burned_pixels_stats.burned
         }
+        brick.pixels = new Array()
         return burned_pixels_stats
     }
 
-    get_pixels_from_brick(brick)
+    get_pixels_from_brick_shape(brick)
     {
         let brick_pixels = new Array()
         for(let i = 0 ; i < brick.pixels.length; ++i)
@@ -324,32 +323,35 @@ class Board
         return null
     }
 
+    can_compress(brick)
+    {
+        let test = Brick.copy(brick)
+        ++test.y
+        let coliding_pixels = this.get_pixels_from_brick_shape(test)
+        if(coliding_pixels.length == 0)
+            return false
+        for(let i = 0; i < coliding_pixels.length; ++i)
+        {
+            const empty_pixel = this.find_spot_to_compress(coliding_pixels[i])
+            if(empty_pixel == null)
+                return false
+        }
+        return true
+        
+    }
+
     compress(brick)
     {
         ++brick.y
-        let coliding_pixels = this.get_pixels_from_brick(brick)
-        if(coliding_pixels.length == 0)
-        {
-            --brick.y
-            return false
-        }
+        let coliding_pixels = this.get_pixels_from_brick_shape(brick)
         let empty_pixels = new Array()
         for(let i = 0; i < coliding_pixels.length; ++i)
         {
-            let found = this.find_spot_to_compress(coliding_pixels[i])
-            if(!found)
-            {
-                --brick.y
-                return false
-            }
-            else
-            {
-                empty_pixels.push(found)
-            }
+            const empty_pixel = this.find_spot_to_compress(coliding_pixels[i])
+            empty_pixels.push(empty_pixel)
         }
         for(let i = 0; i < empty_pixels.length; ++i)
             this.slide_all_above(empty_pixels[i], coliding_pixels[i].y)
-        return true
     }
 
     find_pixels_to_burn(brick)

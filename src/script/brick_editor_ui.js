@@ -26,24 +26,12 @@ class BrickEditorUI
         for(let i = 0; i < data.BrickEditorPropertyNames.length; ++i)
         {
             const property_name = data.BrickEditorPropertyNames[i]
-            html += 
-            `
-                <div class="property">
-                    <img src="${data.BrickEditorPropertyNamesToImg[property_name]}" class="property-name"></img>
-                    ${button("", `editor.toggle_property(this.id)`, `${property_name}`, "toggle")}
-                </div>\n
-            ` 
+            html += html_creator.property(data.BrickEditorPropertyNamesToImg[property_name], property_name, "editor.toggle_property(this.id)")
         }
         for(const type in ModifierType)
         {
             const modifier_type = ModifierType[type]
-            html += 
-            `
-                <div class="property">
-                    <img src="${data.ModifierTypeToImgs[modifier_type]}" class="property-name"></img>
-                    ${button("", `editor.toggle_modifier_type(${modifier_type})`, `modifier-${modifier_type}`, "toggle")}
-                </div>\n
-            ` 
+            html += html_creator.property(data.ModifierTypeToImgs[modifier_type], `modifier-${modifier_type}`, `editor.toggle_modifier_type(${modifier_type})`)
         }
         const display = get_id("editor-properties")
         display.innerHTML = html

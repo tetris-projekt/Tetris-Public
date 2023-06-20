@@ -21,7 +21,7 @@ class ScoreBoardUI
     {
         const display = get_id("clear-box")
         display.innerHTML = `<img src="${get_src("best_scores", "clear_best_scores")}" id="clear"
-        class="button" onclick="score_board.clear()"></img>` + line("short")
+        class="button" onclick="score_board.clear()"></img>` + html_creator.line("short")
         disable_dragging_imgs(display)
     }
 

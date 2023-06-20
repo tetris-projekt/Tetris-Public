@@ -10,31 +10,71 @@
     position: relative;
 }
 
-.window.game #board #bonus-display
+.bonus-display
 {
     position: absolute;
     background-color: var(--TABLE-BG-COLOR);
     border: var(--BORDER);
     box-sizing: border-box;
     width: 90%;
-    margin-top: 31.3rem;
     left: 5%;
     padding-block: 1em;
 }
 
-#bonus-display img
+.window.game .bonus-display
+{
+    margin-top: 31.3rem;
+}
+
+.window.how-to-play .bonus-display
+{
+    margin-top: 15.65rem;
+}
+
+.bonus-display img
 {
     height: 3rem;
 }
 
-#bonus-display.hidden
+.bonus-display.hidden
 {
+    animation: blur;
     opacity: 0;
 }
 
-#bonus-display:not(.hidden)
+.bonus-display:not(.hidden)
 {
     opacity: .8;
+}
+
+@keyframes blur
+{
+    0%
+    {
+        opacity: .8;
+    }
+    100%
+    {
+        transform: scale(1.2);
+        opacity: 0;
+    }
+}
+
+.bonus-display.shown
+{
+    animation: shown;
+}
+
+@keyframes shown
+{
+    0%
+    {
+        transform: scale(0.9);
+    }
+    100%
+    {
+        transform: scale(1);
+    } 
 }
 
 .window.editor #edit
@@ -46,6 +86,17 @@
     margin-inline: auto;
     position: relative;
     background-color: var(--BORDER-COLOR);
+}
+
+.window.how-to-play #tutorial
+{
+    border: var(--BORDER);
+    background-color: var(--BORDER-COLOR);
+    display: inline-block;
+    margin-block: 3rem;
+    width: 40rem;
+    aspect-ratio: 1 / 1;
+    position: relative;
 }
 
 .window.game .line.short
@@ -157,6 +208,11 @@
     width: 10%;
 }
 
+.window.how-to-play #tutorial .pixel
+{
+    width: 10%;
+}
+
 .window.game #preview .pixel
 {
     height: calc(100% / 6);
@@ -210,83 +266,94 @@
     border: 0.2rem solid var(--BORDER-COLOR);
 }
 
+.window.how-to-play #tutorial .pixel.empty
+{
+    background-color: var(--TABLE-BG-COLOR);
+    border: 0.2rem solid var(--BORDER-COLOR);
+}
+
+.window.how-to-play #tutorial .pixel
+{
+    border-width: 0.8rem;
+}
+
 .window.game #preview .pixel.empty
 {
     background-color: var(--TABLE-BG-COLOR);
     border-width: 0;
 }
 
-.window.game .pixel.light-blue
+.pixel.light-blue
 {
     background-color: #00ffff;
     border-color: #00e0e0;
 }
 
-.window.game .pixel.blue
+.pixel.blue
 {
     background-color: #4a4aff;
     border-color: #4242e2;
 }
 
-.window.game .pixel.pink
+.pixel.pink
 {
     background-color: #ff00f0;
     border-color: #e100d2;
 }
 
-.window.game .pixel.green
+.pixel.green
 {
     background-color: #00ff59;
     border-color: #00d249;
 }
 
-.window.game .pixel.yellow
+.pixel.yellow
 {
     background-color: #f6ff50;
     border-color: #d9e140;
 }
 
-.window.game .pixel.orange
+.pixel.orange
 {
     background-color: #ffb71d;
     border-color: #efac1b;
 }
 
-.window.game .pixel.red
+.pixel.red
 {
     background-color: #ff3737;
     border-color: #e72c2c;
 }
 
-.window.game .pixel.ice
+.pixel.ice
 {
     background-image: url("../img/game/pixels/ice.png");
     background-color: none;
     border-color: #a2e3ff;
 }
 
-.window.game .pixel.fire
+.pixel.fire
 {
     background-image: url("../img/game/pixels/fire.png");
     background-color: none;
     border-color: #ff8800;
 }
 
-.window.game .pixel.steel
+.pixel.steel
 {
     background-image: url("../img/game/pixels/steel.png");
     background-color: none;
     border-color: #9c9c9c;
 }
 
-.window.game .pixel.glue
+.pixel.glue
 {
     background-image: url("../img/game/pixels/glue.png");
     background-color: none;
     border-color: #f88f34;
 }
 
-.window.game .pixel.transparent
+.pixel.transparent
 {
     opacity: 20%;
 }

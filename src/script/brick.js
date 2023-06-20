@@ -129,4 +129,71 @@ class Brick
             this.pixels[i].transparent = true
         }
     }
+
+    transform(x, y)
+    {
+        for(let i = 0; i < this.pixels.length; ++i)
+        {
+            let pixel = this.pixels[i]
+            pixel.x *= (x == 0) ? 1 : x
+            pixel.y *= (y == 0) ? 1 : y
+        }
+    }
+
+    get_min_y()
+    {
+        let min_y = 0
+        for(let i = 0; i < this.pixels.length; ++i)
+        {
+            let y = this.pixels[i].y
+            if(y < min_y)
+                min_y = y
+        }
+        return min_y
+    }
+
+    get_max_y()
+    {
+        let max_y = 0
+        for(let i = 0; i < this.pixels.length; ++i)
+        {
+            let y = this.pixels[i].y
+            if(y > max_y)
+                max_y = y
+        }
+        return max_y
+    }
+
+    get_height()
+    {
+        return this.get_max_y() - this.get_min_y() + 1
+    }
+
+    get_pixels_from_y(y)
+    {
+        let pixels_from_y = new Array()
+        for(let i = 0; i < this.pixels.length; ++i)
+        {
+            const pixel = this.pixels[i]
+            if(pixel.y == y)
+                pixels_from_y.push(pixel)
+        }
+        return pixels_from_y
+    }
+
+    get_widest_y()
+    {
+        let widest_y = 0
+        let max_wide = 0
+        for(let y = this.get_min_y(); y <= this.get_max_y(); ++y)
+        {
+            const pixels_from_y = this.get_pixels_from_y(y)
+            if(pixels_from_y.length > max_wide)
+            {
+                widest_y = y
+                max_wide = pixels_from_y.length
+            } 
+        }
+        return widest_y
+    }
 }

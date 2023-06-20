@@ -50,15 +50,8 @@ class Pixel
 
     burn()
     {
-        if(this.modifier == ModifierType.ice)
-        {
-            this.modifier = null
-            return false
-        }
-        else
-        {
-            this.clear()
-            return true
-        }
+        const melted = this.modifier == ModifierType.ice
+        this.clear()
+        return melted
     }
 }

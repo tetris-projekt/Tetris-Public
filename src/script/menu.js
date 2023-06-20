@@ -12,7 +12,7 @@ class Menu
         this.speed_index = Menu.get_speed_index()
         this.game_mode_index = Menu.get_game_mode_index()
         this.normal_number = 0
-        control.open_window("windows", "menu")
+        control.open_window("windows", WindowName.menu)
         this.ui.refresh_game_mode(GameModeList[this.game_mode_index])
         this.ui.refresh_speed(GameSpeedList[this.speed_index])
         refresh_arrows("game-mode", this.game_mode_index == 0, this.game_mode_index == Object.keys(GameMode).length - 1)

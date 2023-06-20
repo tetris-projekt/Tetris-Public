@@ -20,6 +20,7 @@ class Keyboard
             select_next: false,
             select_previous: false,
             click_selected: false,
+            go_back: false,
         }
 
         this.key_intervals = 
@@ -29,7 +30,7 @@ class Keyboard
             move_right: 0,
         }
 
-        this.reverse_controls = false
+        this.reverse_game_controls = false
         
         document.onkeydown = event =>
         {
@@ -44,7 +45,7 @@ class Keyboard
                 this.try_to_move_right()
             if(isIn(key, data.keys.rotate))
             {
-                if(this.reverse_controls == false)
+                if(this.reverse_game_controls == false)
                     this.try_to_rotate()
                 else
                     this.try_to_soft_drop()
@@ -53,7 +54,7 @@ class Keyboard
                 this.try_to_hard_drop()
             if(isIn(key, data.keys.soft_drop))
             {
-                if(this.reverse_controls == false)
+                if(this.reverse_game_controls == false)
                     this.try_to_soft_drop()
                 else
                     this.try_to_rotate()
@@ -64,6 +65,8 @@ class Keyboard
                 this.try_to_select_previous()
             if(isIn(key, data.keys.click_selected))
                 this.try_to_click_selected()
+            if(isIn(key, data.keys.go_back))
+                this.try_to_go_back()
         }
 
         document.onkeyup = event =>
@@ -75,7 +78,7 @@ class Keyboard
                 this.reset_restart()
             if(isIn(key, data.keys.soft_drop))
             {
-                if(this.reverse_controls == false)
+                if(this.reverse_game_controls == false)
                     this.reset_soft_drop()
                 else
                     this.reset_rotate()
@@ -86,7 +89,7 @@ class Keyboard
                 this.reset_move_right()
             if(isIn(key, data.keys.rotate))
             {
-                if(this.reverse_controls == false)
+                if(this.reverse_game_controls == false)
                     this.reset_rotate()
                 else
                     this.reset_soft_drop()
@@ -99,6 +102,8 @@ class Keyboard
                 this.reset_select_previous()
             if(isIn(key, data.keys.click_selected))
                 this.reset_click_selected()
+            if(isIn(key, data.keys.go_back))
+                this.reset_go_back()
         }
     }    
 
@@ -106,7 +111,7 @@ class Keyboard
     {
         if(this.key_states.pause == false)
         {
-            control.try_to_pause()
+            game_control.try_to_pause()
             this.key_states.pause = true
         }
     }
@@ -120,7 +125,7 @@ class Keyboard
     {
         if(this.key_states.restart == false)
         {
-            control.try_to_restart()
+            game_control.try_to_restart()
             this.key_states.restart = true
         }
     }
@@ -134,16 +139,16 @@ class Keyboard
     {
         if(this.key_states.soft_drop == false)
         {
-            control.soft_drop_start()
-            control.soft_drop()
-            this.key_intervals.soft_drop = setInterval("control.soft_drop()", data.delays.soft_drop)
+            game_control.soft_drop_start()
+            game_control.soft_drop()
+            this.key_intervals.soft_drop = setInterval("game_control.soft_drop()", data.delays.soft_drop)
             this.key_states.soft_drop = true
         }
     }
 
     reset_soft_drop()
     {
-        control.soft_drop_end()
+        game_control.soft_drop_end()
         clearInterval(this.key_intervals.soft_drop)
         this.key_states.soft_drop = false
     }
@@ -153,8 +158,8 @@ class Keyboard
         if(this.key_states.move_left == false)
         {
             clearInterval(this.key_intervals.move_right)
-            control.move_left()
-            this.key_intervals.move_left = setInterval("control.move_left()", data.delays.move)
+            game_control.move_left()
+            this.key_intervals.move_left = setInterval("game_control.move_left()", data.delays.move)
             this.key_states.move_left = true
         }
     }
@@ -170,8 +175,8 @@ class Keyboard
         if(this.key_states.move_right == false)
         {
             clearInterval(this.key_intervals.move_left)
-            control.move_right()
-            this.key_intervals.move_right = setInterval("control.move_right()", data.delays.move)
+            game_control.move_right()
+            this.key_intervals.move_right = setInterval("game_control.move_right()", data.delays.move)
             this.key_states.move_right = true
         }
     }
@@ -186,7 +191,7 @@ class Keyboard
     {
         if(this.key_states.rotate == false)
         {
-            control.rotate()
+            game_control.rotate()
             this.key_states.rotate = true
         }
     }
@@ -200,7 +205,7 @@ class Keyboard
     {
         if(this.key_states.hard_drop == false)
         {
-            control.hard_drop()
+            game_control.hard_drop()
             this.key_states.hard_drop = true
         }
     }
@@ -213,11 +218,8 @@ class Keyboard
 
     try_to_select_next()
     {
-        if(this.key_states.select_next == false)
-        {
-            control.select_next()
-            this.key_states.select_next = true
-        }
+        control.try_to_change_selected_button_index(1)
+        this.key_states.select_next = true
     }
 
     reset_select_next()
@@ -227,11 +229,8 @@ class Keyboard
 
     try_to_select_previous()
     {
-        if(this.key_states.select_previous == false)
-        {
-            control.select_previous()
-            this.key_states.select_previous = true
-        }
+        control.try_to_change_selected_button_index(-1)
+        this.key_states.select_previous = true
     }
 
     reset_select_previous()
@@ -251,5 +250,19 @@ class Keyboard
     reset_click_selected()
     {
         this.key_states.click_selected = false
+    }
+
+    try_to_go_back()
+    {
+        if(this.key_states.go_back == false)
+        {
+            control.go_back()
+            this.key_states.go_back = true
+        }
+    }
+
+    reset_go_back()
+    {
+        this.key_states.go_back = false
     }
 }

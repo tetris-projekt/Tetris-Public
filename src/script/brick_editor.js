@@ -16,7 +16,7 @@ class BrickEditor
         this.modifier_types = BrickEditor.get_modifier_types()
         this.edit_board = this.init_board(data.board_sizes.edit.width, data.board_sizes.edit.height)
         this.cur_brick_index = this.bricks.length - 1
-        control.open_window("windows", "editor")
+        control.open_window("windows", WindowName.editor)
         this.ui.create_board()
         this.ui.create_properties()
         this.ui.refresh_modifier_types(this.modifier_types)
@@ -205,6 +205,16 @@ class BrickEditor
         else
             this.properties[name] = true
         refresh_checkbox(name, this.properties[name])
+        if(name == "p4")
+        {
+            this.properties["p1_5"] = false
+            refresh_checkbox("p1_5", this.properties["p1_5"])
+        }
+        if(name == "p1_5")
+        {
+            this.properties["p4"] = false
+            refresh_checkbox("p4", this.properties["p4"])
+        }
         try_to_play_sound("toggle")
     }
 
